@@ -121,9 +121,32 @@ projectsData.forEach((project, projectIndex) => {
       const checkbox = document.createElement("input");
       const key = `task_${taskIndex}_${subIndex}`;
       checkbox.type = "checkbox";
-      checkbox.checked = saved[key] || false;
+      checkbox.type = "button";
+        checkbox.value = materialStages[currentStage]?.label || "Not Started";
+        checkbox.style.backgroundColor = materialStages[currentStage]?.color || "#ccc";
 
-      checkbox.onchange = () => {
+      checkbox.onclick = () => {
+        currentStage = (currentStage + 1) % 4;
+        checkbox.value = materialStages[currentStage].label;
+        checkbox.style.backgroundColor = materialStages[currentStage].color;
+        saved[key] = currentStage;
+        localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
+        
+        progress.value = allSubtasks.reduce((total, key) => {
+          const val = saved[key];
+          if (typeof val === 'number') {
+            if (key.startsWith("mat_")) {
+              return total + (val >= 2 ? 1 : val * 0.25);  // stage 2 & 3 count as full
+            } else {
+              return total + (val ? 1 : 0);
+            }
+          } else {
+            return total + (val ? 1 : 0);
+          }
+        }, 0);
+
+        percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
+      };
         saved[key] = checkbox.checked;
         localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
         progress.value = Object.values(saved).filter(Boolean).length;
@@ -144,6 +167,12 @@ projectsData.forEach((project, projectIndex) => {
   });
 
   // Materials Section
+  const materialStages = [
+    { label: "Picked up", color: "red" },
+    { label: "On Van", color: "orange" },
+    { label: "Installed/Used", color: "green" },
+    { label: "Unused Returning to Office", color: "blue" }
+  ];
   const matSection = document.createElement("details");
   const matSummary = document.createElement("summary");
   matSummary.textContent = "📦 Materials";
@@ -166,10 +195,34 @@ projectsData.forEach((project, projectIndex) => {
 
         const checkbox = document.createElement("input");
         const key = `mat_${matIndex}_${subIndex}`;
+        let currentStage = saved[key] || 0;
         checkbox.type = "checkbox";
-        checkbox.checked = saved[key] || false;
+        checkbox.type = "button";
+        checkbox.value = materialStages[currentStage]?.label || "Not Started";
+        checkbox.style.backgroundColor = materialStages[currentStage]?.color || "#ccc";
 
-        checkbox.onchange = () => {
+        checkbox.onclick = () => {
+        currentStage = (currentStage + 1) % 4;
+        checkbox.value = materialStages[currentStage].label;
+        checkbox.style.backgroundColor = materialStages[currentStage].color;
+        saved[key] = currentStage;
+        localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
+        
+        progress.value = allSubtasks.reduce((total, key) => {
+          const val = saved[key];
+          if (typeof val === 'number') {
+            if (key.startsWith("mat_")) {
+              return total + (val >= 2 ? 1 : val * 0.25);  // stage 2 & 3 count as full
+            } else {
+              return total + (val ? 1 : 0);
+            }
+          } else {
+            return total + (val ? 1 : 0);
+          }
+        }, 0);
+
+        percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
+      };
           saved[key] = checkbox.checked;
           localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
           progress.value = Object.values(saved).filter(Boolean).length;
