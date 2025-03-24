@@ -81,9 +81,32 @@ projectsData.forEach((project, projectIndex) => {
   const progress = document.createElement("progress");
   progress.max = allSubtasks.length;
   progress.value = Object.values(saved).filter(Boolean).length;
-  container.appendChild(progress);
+        percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
+  
+  const progressContainer = document.createElement("div");
+  progressContainer.style.display = "flex";
+  progressContainer.style.alignItems = "center";
+  progressContainer.style.gap = "1rem";
+  progressContainer.style.marginBottom = "1rem";
+
+  const percentageLabel = document.createElement("span");
+  percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
+
+  progress.onchange = () => {
+    percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
+  };
+
+  progressContainer.appendChild(progress);
+  progressContainer.appendChild(percentageLabel);
+  container.appendChild(progressContainer);
+
 
   // Tasks Section
+  const taskSection = document.createElement("details");
+  const taskSummary = document.createElement("summary");
+  taskSummary.textContent = "📋 Tasks";
+  taskSummary.style.fontWeight = "bold";
+  taskSection.appendChild(taskSummary);
   project.tasks.forEach((task, taskIndex) => {
     const taskDiv = document.createElement("div");
     taskDiv.className = "task";
@@ -104,6 +127,7 @@ projectsData.forEach((project, projectIndex) => {
         saved[key] = checkbox.checked;
         localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
         progress.value = Object.values(saved).filter(Boolean).length;
+        percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
       };
 
       const label = document.createElement("label");
@@ -116,15 +140,19 @@ projectsData.forEach((project, projectIndex) => {
     });
 
     taskDiv.appendChild(subtaskList);
-    container.appendChild(taskDiv);
+    taskSection.appendChild(taskDiv);
   });
 
   // Materials Section
+  const matSection = document.createElement("details");
+  const matSummary = document.createElement("summary");
+  matSummary.textContent = "📦 Materials";
+  matSummary.style.fontWeight = "bold";
+  matSection.appendChild(matSummary);
   if (project.materials) {
     const materialsHeader = document.createElement("h3");
     materialsHeader.textContent = "🔧 Materials";
-    container.appendChild(materialsHeader);
-
+    
     project.materials.forEach((mat, matIndex) => {
       const matDiv = document.createElement("div");
       matDiv.className = "task";
@@ -145,6 +173,7 @@ projectsData.forEach((project, projectIndex) => {
           saved[key] = checkbox.checked;
           localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
           progress.value = Object.values(saved).filter(Boolean).length;
+        percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
         };
 
         const label = document.createElement("label");
@@ -157,9 +186,10 @@ projectsData.forEach((project, projectIndex) => {
       });
 
       matDiv.appendChild(matList);
-      container.appendChild(matDiv);
+      matSection.appendChild(matDiv);
     });
   }
 
+  container.appendChild(taskSection);
   projectsContainer.appendChild(container);
 });
