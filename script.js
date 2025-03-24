@@ -131,20 +131,7 @@ projectsData.forEach((project, projectIndex) => {
         checkbox.style.backgroundColor = materialStages[currentStage].color;
         saved[key] = currentStage;
         localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
-        
-        progress.value = allSubtasks.reduce((total, key) => {
-          const val = saved[key];
-          if (typeof val === 'number') {
-            if (key.startsWith("mat_")) {
-              return total + (val >= 2 ? 1 : val * 0.25);  // stage 2 & 3 count as full
-            } else {
-              return total + (val ? 1 : 0);
-            }
-          } else {
-            return total + (val ? 1 : 0);
-          }
-        }, 0);
-
+        progress.value = Object.values(saved).filter(stage => typeof stage === 'number' ? stage > 0 : stage).length;
         percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
       };
         saved[key] = checkbox.checked;
@@ -207,20 +194,7 @@ projectsData.forEach((project, projectIndex) => {
         checkbox.style.backgroundColor = materialStages[currentStage].color;
         saved[key] = currentStage;
         localStorage.setItem("project_" + projectIndex, JSON.stringify(saved));
-        
-        progress.value = allSubtasks.reduce((total, key) => {
-          const val = saved[key];
-          if (typeof val === 'number') {
-            if (key.startsWith("mat_")) {
-              return total + (val >= 2 ? 1 : val * 0.25);  // stage 2 & 3 count as full
-            } else {
-              return total + (val ? 1 : 0);
-            }
-          } else {
-            return total + (val ? 1 : 0);
-          }
-        }, 0);
-
+        progress.value = Object.values(saved).filter(stage => typeof stage === 'number' ? stage > 0 : stage).length;
         percentageLabel.textContent = Math.round((progress.value / progress.max) * 100) + "%";
       };
           saved[key] = checkbox.checked;
