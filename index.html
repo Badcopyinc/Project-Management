@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M3T Project Tracker</title>
+  <link rel="icon" href="https://www.m3tcorporation.com/wp-content/uploads/2022/04/M3T-Logo-White-Text.png" />
+</head>
+<body>
+  <h1>M3T Project Tracker (Live Sync Version)</h1>
+  <p>This version connects to Google Sheets and updates task & material progress live.</p>
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec";
+    let editMode = false;
+    let techProjects = {};
+
+    function fetchProjects() {
+      fetch(SCRIPT_URL)
+        .then(res => res.json())
+        .then(data => {
+          techProjects = data;
+          console.log("Loaded data:", techProjects);
+        });
+    }
+
+    function saveProjects() {
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(techProjects),
+        headers: { 'Content-Type': 'application/json' }
+      }).then(() => {
+        console.log("Saved to Google Sheets");
+      });
+    }
+
+    window.onload = fetchProjects;
+  </script>
+</body>
+</html>
