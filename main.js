@@ -1,1 +1,0 @@
-console.log('This is the placeholder for the fully working tracker logic. Will include: dashboard, tech/project links, tracker UI, material/task sync, Google Sheets integration, and edit/save logic.');
