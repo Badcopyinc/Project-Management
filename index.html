@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M3T Project Tracker</title>
+  <link rel="icon" href="https://www.m3tcorporation.com/wp-content/uploads/2022/04/M3T-Logo-White-Text.png" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 1rem; }
+    h1 { color: red; }
+    .card { border: 1px solid #ccc; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .project { display: flex; justify-content: space-between; }
+    .link { color: blue; text-decoration: underline; cursor: pointer; }
+    .progress-bar { background: #eee; border-radius: 6px; overflow: hidden; height: 12px; margin-top: 4px; }
+    .progress-fill { background: green; height: 100%; transition: width 0.3s ease; }
+  </style>
+</head>
+<body>
+  <h1>M3T Technician Dashboard</h1>
+  <div id="dashboard"></div>
+  <hr />
+  <div id="tracker" style="display:none;">
+    <h2 id="tracker-title"></h2>
+    <div id="task-list"></div>
+    <div id="material-list"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-bar" style="width:0%"></div></div>
+    <button onclick="goBack()">Back to Dashboard</button>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
