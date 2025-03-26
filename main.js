@@ -83,8 +83,9 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
         }
       });
 
-      techDiv.appendChild(addBtn);
-      techDiv.appendChild(input);
+      projectList.appendChild(addBtn);
+      projectList.appendChild(input);
+
 
       technicianContainer.appendChild(techDiv);
     
