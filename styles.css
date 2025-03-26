@@ -1,1 +1,43 @@
-/* Fixed styles.css placeholder with logo and mobile font fixes */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f8f7;
+  margin: 0;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  color: #007bff;
+  padding: 10px 20px;
+}
+.logo {
+  height: 40px;
+}
+.title {
+  font-size: 22px;
+}
+.technician-card {
+  background: white;
+  margin: 1em auto;
+  max-width: 600px;
+  padding: 1em;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.progress-bar-container {
+  width: 100%;
+  background-color: #ccc;
+  height: 8px;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+.progress-bar {
+  height: 100%;
+  background-color: #007bff;
+  border-radius: 4px;
+}
+.project-name {
+  font-weight: bold;
+  color: #4b0082;
+}
