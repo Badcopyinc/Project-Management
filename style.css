@@ -1,60 +1,52 @@
-
 body {
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f7f6;
+  background: #f5f8f7;
+  text-align: center;
 }
 header {
   background: #111;
+  padding: 10px;
   color: white;
-  padding: 10px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 .logo {
   height: 40px;
+  margin-right: 15px;
 }
-.dashboard-title {
-  font-size: 1.5em;
-  margin: 0;
-  color: #00aaff;
+.title {
+  font-size: 1.5rem;
+  color: #0094ff;
 }
-.centered-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px;
-}
-.tech {
+.tech-card, .project-card {
   background: white;
-  border: 1px solid #ccc;
-  margin: 10px 0;
-  padding: 10px;
-  width: 100%;
-  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin: 20px;
+  padding: 15px;
 }
-.project-entry {
-  margin-top: 5px;
+button, .add-button {
+  margin: 10px auto;
+  padding: 8px 14px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #0094ff;
+  color: white;
+  cursor: pointer;
 }
 .progress-bar {
-  width: 100%;
+  width: 80%;
   height: 10px;
-  background: #ddd;
-  border-radius: 5px;
-  margin-top: 5px;
+  background-color: #ddd;
+  border-radius: 6px;
+  margin: 10px auto;
+  overflow: hidden;
 }
-.progress-fill {
+.progress-bar-fill {
   height: 100%;
-  background: #00aaff;
-  width: 0%;
-  transition: width 0.3s ease-in-out;
-}
-.add-project-btn {
-  margin-top: 10px;
-  background: #00aaff;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  cursor: pointer;
+  background-color: #0094ff;
+  transition: width 0.3s;
 }
