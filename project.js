@@ -1,94 +1,100 @@
 
-let isEditing = false;
+const scriptUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLiqtKsta7fndkeQKjWivVrAhBlgBFntMB74F9TkSRYAdG4Zd6SFFnad-6NEWK45uKDn5OlADFgWo66oE2n0t8OKSGbg594iDm_MqHgNfpLIpxbImrLaoT_brbmifOLzKEMAlMeA-eew4fHBE1VUBqyxJUMTaSqbQJcqigeNZjjwI7X9dF3nXi_mOSbJYh8VmIKti4ppwZuuHSUm_IfRrZnAWa4Cf-AerYmZ06F2SmBODjL6sctccCCjHBPKdRH5PUdh5PK7osu1w5MPvEBa9988XvdCs5IziMwbqlvK&lib=MkkaF6ErJhfhPZ-5m-D1_YuXGf20AjjVP";
 
-function getQueryParams() {
-  const params = new URLSearchParams(window.location.search);
+function getParams() {
+  const urlParams = new URLSearchParams(window.location.search);
   return {
-    tech: params.get("tech"),
-    project: params.get("project")
+    tech: urlParams.get("tech"),
+    project: urlParams.get("project")
   };
 }
-
-function toggleEdit() {
-  isEditing = !isEditing;
-  renderProject(currentData);
-}
-
-let currentData = {};
 
 async function loadProject() {
-  const { tech, project } = getQueryParams();
-  const res = await fetch(SCRIPT_URL);
-  const data = await res.json();
-  currentData = data[tech][project];
-  renderProject(currentData);
-}
+  const { tech, project } = getParams();
+  const container = document.getElementById("tracker");
+  try {
+    const res = await fetch(scriptUrl);
+    const data = await res.json();
+    const projectData = data[tech]?.[project];
 
-function renderProject(data) {
-  const container = document.getElementById("projectView");
-  container.innerHTML = "";
-
-  const taskList = document.createElement("div");
-  const taskHeader = document.createElement("h2");
-  taskHeader.textContent = "Tasks";
-  taskList.appendChild(taskHeader);
-
-  data.tasks.forEach((task, i) => {
-    const item = document.createElement("div");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = task.complete;
-    checkbox.disabled = !isEditing;
-    checkbox.onchange = () => {
-      task.complete = checkbox.checked;
-      saveData();
-    };
-    const label = document.createElement("span");
-    label.textContent = task.name;
-    item.appendChild(checkbox);
-    item.appendChild(label);
-    taskList.appendChild(item);
-  });
-
-  const materialList = document.createElement("div");
-  const matHeader = document.createElement("h2");
-  matHeader.textContent = "Materials";
-  materialList.appendChild(matHeader);
-
-  data.materials.forEach((mat, i) => {
-    const item = document.createElement("div");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = mat.stage > 0;
-    checkbox.disabled = !isEditing;
-    checkbox.onclick = () => {
-      mat.stage = (mat.stage + 1) % 4;
-      saveData();
-    };
-    const label = document.createElement("span");
-    label.textContent = `${mat.name} (Stage ${mat.stage})`;
-    item.appendChild(checkbox);
-    item.appendChild(label);
-    materialList.appendChild(item);
-  });
-
-  container.appendChild(taskList);
-  container.appendChild(materialList);
-}
-
-async function saveData() {
-  const { tech, project } = getQueryParams();
-  const payload = {
-    [tech]: {
-      [project]: currentData
+    if (!projectData) {
+      container.innerHTML = "<p>Project not found.</p>";
+      return;
     }
-  };
-  await fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-  renderProject(currentData);
+
+    container.innerHTML = `
+      <h2>${project}</h2>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <section>
+        <h3>Tasks</h3>
+        <ul id="taskList"></ul>
+        <button onclick="addTask()">+ Add Task</button>
+      </section>
+      <section>
+        <h3>Materials</h3>
+        <ul id="materialList"></ul>
+        <button onclick="addMaterial()">+ Add Material</button>
+      </section>
+    `;
+
+    const taskList = document.getElementById("taskList");
+    const materialList = document.getElementById("materialList");
+
+    projectData.tasks.forEach(t => {
+      const li = document.createElement("li");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = t.complete;
+      checkbox.onchange = updateProgress;
+      li.appendChild(checkbox);
+      li.appendChild(document.createTextNode(" " + t.name));
+      taskList.appendChild(li);
+    });
+
+    projectData.materials.forEach(m => {
+      const li = document.createElement("li");
+      li.textContent = m.name;
+      materialList.appendChild(li);
+    });
+
+    updateProgress();
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = "<p>Error loading project.</p>";
+  }
 }
 
-window.onload = loadProject;
+function addTask() {
+  const taskName = prompt("Task name:");
+  if (taskName) {
+    const taskList = document.getElementById("taskList");
+    const li = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.onchange = updateProgress;
+    li.appendChild(checkbox);
+    li.appendChild(document.createTextNode(" " + taskName));
+    taskList.appendChild(li);
+    updateProgress();
+  }
+}
+
+function addMaterial() {
+  const matName = prompt("Material name:");
+  if (matName) {
+    const matList = document.getElementById("materialList");
+    const li = document.createElement("li");
+    li.textContent = matName;
+    matList.appendChild(li);
+    updateProgress();
+  }
+}
+
+function updateProgress() {
+  const checkboxes = document.querySelectorAll("#taskList input[type='checkbox']");
+  const checked = [...checkboxes].filter(cb => cb.checked).length;
+  const percent = checkboxes.length ? Math.round((checked / checkboxes.length) * 100) : 0;
+  document.getElementById("progressFill").style.width = percent + "%";
+}
+
+loadProject();
