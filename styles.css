@@ -3,20 +3,27 @@ body {
   background-color: #f5f8f7;
   margin: 0;
 }
+
 header {
   display: flex;
   justify-content: space-between;
-  align-items: right;
+  align-items: center; /* Fixed: center instead of invalid 'right' */
   background-color: #111;
   color: #007bff;
   padding: 10px 20px;
 }
+
 .logo {
   height: 40px;
 }
+
 .title {
   font-size: 22px;
+  color: #00aaff; /* Light blue for M3T title */
+  margin-left: auto; /* Pushes it to the right */
+  text-align: right;
 }
+
 .technician-card {
   background: white;
   margin: 1em auto;
@@ -25,6 +32,7 @@ header {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
 .progress-bar-container {
   width: 100%;
   background-color: #ccc;
@@ -32,11 +40,13 @@ header {
   border-radius: 4px;
   margin-top: 5px;
 }
+
 .progress-bar {
   height: 100%;
   background-color: #007bff;
   border-radius: 4px;
 }
+
 .project-name {
   font-weight: bold;
   color: #4b0082;
