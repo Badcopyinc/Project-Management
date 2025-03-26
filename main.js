@@ -46,7 +46,48 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
         projectList.innerHTML += projectHTML;
       });
 
+      
+      // Add Project Button
+      const addBtn = document.createElement("button");
+      addBtn.textContent = "+ Add Project";
+      addBtn.className = "add-project-btn";
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Enter project name";
+      input.style.display = "none";
+      input.className = "add-project-input";
+
+      addBtn.addEventListener("click", () => {
+        if (input.style.display === "none") {
+          input.style.display = "block";
+          input.focus();
+        } else {
+          input.style.display = "none";
+        }
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && input.value.trim()) {
+          const newProjectName = input.value.trim();
+          const projectDiv = document.createElement("div");
+          projectDiv.className = "project";
+          projectDiv.innerHTML = `
+            <p class="project-name">${newProjectName}</p>
+            <div class="progress-bar-container"><div class="progress-bar" style="width:0%"></div></div>
+            <p>0% Complete</p>
+          `;
+          projectList.appendChild(projectDiv);
+          input.value = "";
+          input.style.display = "none";
+        }
+      });
+
+      techDiv.appendChild(addBtn);
+      techDiv.appendChild(input);
+
       technicianContainer.appendChild(techDiv);
+    
     });
   })
   .catch(error => {
