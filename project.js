@@ -41,7 +41,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const stage = mat.status;
         const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
 
-        const stageBtn = document.createElement("button");
+        
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = mat.status > 0;
+        cb.onclick = () => {
+          const newStage = (mat.status + 1) % 4;
+          updateStatus(tech, project, "material", mat.name, newStage);
+        };
+        li.appendChild(cb);
+        
+        const stageBtn = document.createElement("span");
+    
         stageBtn.textContent = stages[stage] || stages[0];
         stageBtn.style.color = ["gold", "red", "green", "blue"][stage] || "black";
 
@@ -50,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
           updateStatus(tech, project, "material", mat.name, newStage);
         };
 
-        li.appendChild(stageBtn);
+        stageBtn.style.marginLeft = "0.5rem"; li.appendChild(stageBtn);
         matList.appendChild(li);
       });
 
