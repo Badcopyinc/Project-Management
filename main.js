@@ -1,4 +1,3 @@
-
 const technicianContainer = document.getElementById('technicianContainer');
 
 fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLiqtKsta7fndkeQKjWivVrAhBlgBFntMB74F9TkSRYAdG4Zd6SFFnad-6NEWK45uKDn5OlADFgWo66oE2n0t8OKSGbg594iDm_MqHgNfpLIpxbImrLaoT_brbmifOLzKEMAlMeA-eew4fHBE1VUBqyxJUMTaSqbQJcqigeNZjjwI7X9dF3nXi_mOSbJYh8VmIKti4ppwZuuHSUm_IfRrZnAWa4Cf-AerYmZ06F2SmBODjL6sctccCCjHBPKdRH5PUdh5PK7osu1w5MPvEBa9988XvdCs5IziMwbqlvK&lib=MkkaF6ErJhfhPZ-5m-D1_YuXGf20AjjVP')
@@ -19,13 +18,12 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
       projectList.style.display = "none";
       projectList.className = "project-list";
 
+      // Add collapse toggle
       techHeader.addEventListener("click", () => {
         projectList.style.display = projectList.style.display === "none" ? "block" : "none";
       });
 
-      techDiv.appendChild(techHeader);
-      techDiv.appendChild(projectList);
-
+      // Render existing projects
       Object.entries(projects).forEach(([projectName, projectData]) => {
         const tasks = projectData.tasks || [];
         const materials = projectData.materials || [];
@@ -34,20 +32,20 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
         const completed = tasks.filter(t => t.status === 1).length + materials.filter(m => m.status === 3).length;
         const percent = total ? Math.round((completed / total) * 100) : 0;
 
-        const projectHTML = `
-          <div class="project">
-            <p class="project-name">${projectName}</p>
-            <div class="progress-bar-container">
-              <div class="progress-bar" style="width:${percent}%"></div>
-            </div>
-            <p>${percent}% Complete</p>
+        const projectDiv = document.createElement("div");
+        projectDiv.className = "project";
+        projectDiv.innerHTML = `
+          <p class="project-name">${projectName}</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width:${percent}%"></div>
           </div>
+          <p>${percent}% Complete</p>
         `;
-        projectList.innerHTML += projectHTML;
+
+        projectList.appendChild(projectDiv);
       });
 
-      
-      // Add Project Button
+      // Create add project button + input
       const addBtn = document.createElement("button");
       addBtn.textContent = "+ Add Project";
       addBtn.className = "add-project-btn";
@@ -58,15 +56,13 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
       input.style.display = "none";
       input.className = "add-project-input";
 
+      // Add project button toggle
       addBtn.addEventListener("click", () => {
-        if (input.style.display === "none") {
-          input.style.display = "block";
-          input.focus();
-        } else {
-          input.style.display = "none";
-        }
+        input.style.display = input.style.display === "none" ? "block" : "none";
+        if (input.style.display === "block") input.focus();
       });
 
+      // Add project on Enter
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && input.value.trim()) {
           const newProjectName = input.value.trim();
@@ -74,7 +70,9 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
           projectDiv.className = "project";
           projectDiv.innerHTML = `
             <p class="project-name">${newProjectName}</p>
-            <div class="progress-bar-container"><div class="progress-bar" style="width:0%"></div></div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width:0%"></div>
+            </div>
             <p>0% Complete</p>
           `;
           projectList.appendChild(projectDiv);
@@ -85,11 +83,14 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
         }
       });
 
-      
+      // Append button/input to projectList initially (only shows when expanded)
+      projectList.appendChild(addBtn);
+      projectList.appendChild(input);
 
-
+      // Build the tech card
+      techDiv.appendChild(techHeader);
+      techDiv.appendChild(projectList);
       technicianContainer.appendChild(techDiv);
-    
     });
   })
   .catch(error => {
