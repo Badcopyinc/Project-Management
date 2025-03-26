@@ -1,52 +1,38 @@
 
 body {
   margin: 0;
-  font-family: sans-serif;
-  background: #f5f7f6;
+  font-family: Arial, sans-serif;
+  background: #f5f8f7;
+  color: #000;
+  text-align: center;
 }
 
-header {
+.header {
   background: #111;
-  color: white;
-  padding: 10px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding: 10px;
 }
 
 .logo {
-  height: 40px;
-  margin-right: 10px;
+  height: 50px;
 }
 
-h1 {
-  font-size: 1.5rem;
-  color: #3aaed8;
+.header-title {
+  color: #007bff;
+  font-size: 24px;
 }
 
-main {
-  padding: 10px;
+.loading {
+  padding: 40px;
+  font-size: 18px;
 }
 
-.tech-entry {
-  background: white;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-.project-entry {
-  margin: 5px 0;
-  padding-left: 15px;
-}
-
-.bar {
-  height: 10px;
-  background: #ccc;
-  margin-top: 5px;
-  width: 100px;
-}
-
-.bar-fill {
-  height: 100%;
-  background: #4caf50;
+.tech-card {
+  background: #fff;
+  border: 1px solid #ccc;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 6px;
 }
