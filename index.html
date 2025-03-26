@@ -54,5 +54,48 @@
   <div class="container" id="dashboard">Loading...</div>
 
   <script src="main.js"></script>
+
+<script>
+  const dashboard = document.getElementById("dashboard");
+
+  fetch("https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec")
+    .then(res => res.json())
+    .then(data => {
+      dashboard.innerHTML = '';
+      Object.keys(data).forEach(tech => {
+        const techDiv = document.createElement('div');
+        techDiv.className = 'tech';
+        techDiv.textContent = tech;
+
+        const projectContainer = document.createElement('div');
+        projectContainer.className = 'project';
+
+        Object.keys(data[tech]).forEach(project => {
+          const projLink = document.createElement('a');
+          projLink.href = `project.html?tech=${encodeURIComponent(tech)}&project=${encodeURIComponent(project)}`;
+          const tasks = data[tech][project].tasks || [];
+          const materials = data[tech][project].materials || [];
+          const taskProgress = tasks.filter(t => t.complete).length / (tasks.length || 1);
+          const materialProgress = materials.filter(m => m.stage === 3).length / (materials.length || 1);
+          const avg = ((taskProgress + materialProgress) / 2) * 100;
+          projLink.textContent = `${project} – ${avg.toFixed(0)}%`;
+          projectContainer.appendChild(projLink);
+        });
+
+        techDiv.addEventListener("click", () => {
+          projectContainer.style.display = projectContainer.style.display === "none" ? "block" : "none";
+        });
+
+        dashboard.appendChild(techDiv);
+        dashboard.appendChild(projectContainer);
+        projectContainer.style.display = "none";
+      });
+    })
+    .catch(err => {
+      dashboard.innerHTML = "<p style='color:red'>Failed to load project data.</p>";
+      console.error("Data fetch error:", err);
+    });
+</script>
 </body>
+
 </html>
