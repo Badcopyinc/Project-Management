@@ -78,13 +78,14 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
             <p>0% Complete</p>
           `;
           projectList.appendChild(projectDiv);
+          projectList.appendChild(addBtn);
+          projectList.appendChild(input);
           input.value = "";
           input.style.display = "none";
         }
       });
 
-      projectList.appendChild(addBtn);
-      projectList.appendChild(input);
+      
 
 
       technicianContainer.appendChild(techDiv);
