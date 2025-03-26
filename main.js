@@ -1,32 +1,38 @@
 
-// Fetch data and render the dashboard
-async function loadDashboard() {
-  try {
-    const res = await fetch(SCRIPT_URL);
-    const data = await res.json();
-    const container = document.getElementById("dashboard");
-    container.innerHTML = "";
+const dashboard = document.getElementById("dashboard");
 
+fetch("https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec")
+  .then(res => res.json())
+  .then(data => {
+    dashboard.innerHTML = '';
     Object.keys(data).forEach(tech => {
-      const techDiv = document.createElement("div");
-      const techTitle = document.createElement("h2");
-      techTitle.textContent = tech;
-      techDiv.appendChild(techTitle);
+      const techDiv = document.createElement('div');
+      techDiv.className = 'tech';
+      techDiv.textContent = tech;
+
+      const projectContainer = document.createElement('div');
+      projectContainer.className = 'project';
 
       Object.keys(data[tech]).forEach(project => {
-        const projLink = document.createElement("a");
+        const projLink = document.createElement('a');
         projLink.href = `project.html?tech=${encodeURIComponent(tech)}&project=${encodeURIComponent(project)}`;
-        projLink.textContent = `${project}`;
-        projLink.style.display = "block";
-        techDiv.appendChild(projLink);
+        const tasks = data[tech][project].tasks || [];
+        const materials = data[tech][project].materials || [];
+        const taskProgress = tasks.filter(t => t.complete).length / tasks.length || 0;
+        const materialProgress = materials.filter(m => m.stage >= 2).length / materials.length || 0;
+        const percent = Math.round(((taskProgress + materialProgress) / 2) * 100);
+        projLink.textContent = `${project} - ${percent}%`;
+        projectContainer.appendChild(projLink);
       });
 
-      container.appendChild(techDiv);
-    });
-  } catch (err) {
-    document.getElementById("dashboard").innerHTML = "Failed to load project data.";
-    console.error("Error loading data:", err);
-  }
-}
+      techDiv.addEventListener("click", () => {
+        techDiv.appendChild(projectContainer);
+      });
 
-window.onload = loadDashboard;
+      dashboard.appendChild(techDiv);
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    dashboard.innerHTML = "Failed to load project data.";
+  });
