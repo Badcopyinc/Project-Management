@@ -6,7 +6,16 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
     Object.keys(data).forEach(tech => {
       const card = document.createElement('div');
       card.className = 'tech-card';
-      card.innerHTML = `<h2 style="text-align:center;">${tech}</h2>`;
+      
+    card.innerHTML = `
+      <h2 style="text-align:center; cursor:pointer;">${tech}</h2>
+      <div class="project-section" style="display:none;" id="section-${tech.replace(/\s+/g, '')}"></div>
+    `;
+    card.querySelector('h2').addEventListener('click', () => {
+      const section = document.getElementById("section-" + tech.replace(/\s+/g, ""));
+      section.style.display = section.style.display === "none" ? "block" : "none";
+    });
+    
       Object.keys(data[tech]).forEach(project => {
         const projectData = data[tech][project];
         const totalTasks = projectData.tasks.length;
