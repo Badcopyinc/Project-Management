@@ -8,7 +8,16 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
     technicianContainer.innerHTML = '';
 
     // Check for expected format: array of arrays
-    if (!Array.isArray(data) || !Array.isArray(data[0])) {
+    
+    if (!Array.isArray(data)) {
+      if (data.data && Array.isArray(data.data)) {
+        data = data.data;
+      } else {
+        technicianContainer.innerHTML = "<p style='color:red;'>Data format error. Please check the Google Sheet or Apps Script.</p>";
+        throw new Error("Data format invalid");
+      }
+    }
+    
       technicianContainer.innerHTML = "<p style='color:red;'>Data format error. Please check the Google Sheet or Apps Script.</p>";
       throw new Error("Data format invalid");
     }
