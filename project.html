@@ -1,18 +1,37 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Project Tracker</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <header>
-    <a href="index.html"><img src="logo.png" alt="M3T Logo" class="logo"></a>
+    <a href="index.html"><img src="https://www.m3tcorporation.com/wp-content/uploads/2021/09/M3T-Logo-White.png" alt="M3T Logo" class="logo"/></a>
     <h1 class="header-text">Project Tracker</h1>
   </header>
   <main>
-    <div id="project-container">Loading...</div>
+    <div id="project-container">
+      <h2 id="project-name">Loading...</h2>
+      <div class="progress-container">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+        <div id="progress-percent">0%</div>
+      </div>
+      <section>
+        <h3>Tasks</h3>
+        <ul id="task-list"></ul>
+        <button onclick="addTask()">+ Add Task</button>
+      </section>
+      <section>
+        <h3>Materials</h3>
+        <ul id="material-list"></ul>
+        <button onclick="addMaterial()">+ Add Material</button>
+      </section>
+    </div>
   </main>
   <script src="project.js"></script>
 </body>
