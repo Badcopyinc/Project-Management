@@ -1,150 +1,19 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project Tracker</title>
-  <link rel="icon" href="Final-M3T-Logo-White.png" />
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
-    header { background: #222; color: white; padding: 1rem; display: flex; align-items: center; justify-content: space-between; }
-    header img { height: 40px; }
-    h1 { font-size: 1.25rem; margin: 0; }
-    main { padding: 1rem; }
-    .card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .collapsible { background: #eee; padding: 0.5rem; border-radius: 5px; cursor: pointer; margin-top: 0.5rem; }
-    .collapsible-content { display: none; padding: 0.5rem 1rem; background: #fafafa; border-radius: 0 0 5px 5px; }
-    .progress-bar { height: 10px; background: #ccc; border-radius: 5px; margin-top: 0.5rem; }
-    .progress-fill { height: 10px; background: green; border-radius: 5px; width: 0%; transition: width 0.3s ease; }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <img src="Final-M3T-Logo-White.png" alt="M3T Logo" />
-    <h1 id="pageTitle">Loading...</h1>
-    <button onclick="toggleEditMode()">Toggle Edit</button>
+    <img src="Final-M3T-Logo-White.png" alt="M3T Logo" class="logo" />
+    <h1>Project Tracker</h1>
   </header>
-  <main id="trackerView"></main>
-
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec";
-    let editMode = false;
-    let tech = "", project = "", data = {};
-
-    function getParams() {
-      const params = new URLSearchParams(window.location.search);
-      tech = params.get("tech");
-      project = params.get("project");
-    }
-
-    function fetchProject() {
-      fetch(SCRIPT_URL)
-        .then(res => res.json())
-        .then(all => {
-          data = all?.[tech]?.[project] || {};
-          renderTracker();
-        });
-    }
-
-    function toggleEditMode() {
-      editMode = !editMode;
-      renderTracker();
-    }
-
-    function renderTracker() {
-      document.getElementById("pageTitle").textContent = `${project} (${tech})`;
-      const container = document.getElementById("trackerView");
-      container.innerHTML = "";
-
-      const card = document.createElement("div");
-      card.className = "card";
-
-      // TASKS
-      const taskToggle = document.createElement("div");
-      taskToggle.className = "collapsible";
-      taskToggle.textContent = "Tasks";
-      const taskWrap = document.createElement("div");
-      taskWrap.className = "collapsible-content";
-
-      const taskList = document.createElement("ul");
-      data.tasks?.forEach((task, i) => {
-        const li = document.createElement("li");
-        li.innerHTML = \`
-          <input type="checkbox" \${task.complete ? "checked" : ""} onchange="toggleTask(\${i})">
-          <span contenteditable="\${editMode}" onblur="renameTask(\${i}, this.textContent)">\${task.name}</span>
-        \`;
-        taskList.appendChild(li);
-      });
-      taskWrap.appendChild(taskList);
-      const taskBar = document.createElement("div");
-      taskBar.className = "progress-bar";
-      const taskFill = document.createElement("div");
-      taskFill.className = "progress-fill";
-      const completed = data.tasks?.filter(t => t.complete).length || 0;
-      const percent = data.tasks?.length ? (completed / data.tasks.length) * 100 : 0;
-      taskFill.style.width = percent + "%";
-      taskBar.appendChild(taskFill);
-      taskWrap.appendChild(taskBar);
-
-      // MATERIALS
-      const matToggle = document.createElement("div");
-      matToggle.className = "collapsible";
-      matToggle.textContent = "Materials";
-      const matWrap = document.createElement("div");
-      matWrap.className = "collapsible-content";
-
-      const matList = document.createElement("ul");
-      const stages = ["", "Picked up / On Van", "On Site", "Installed/Used", "Unused/RTO"];
-      const colors = ["", "orange", "red", "green", "blue"];
-
-      data.materials?.forEach((mat, i) => {
-        const li = document.createElement("li");
-        const stage = mat.stage || 0;
-        li.innerHTML = \`
-          <button onclick="cycleStage(\${i})">\${mat.name}</button>
-          <span style="color: \${colors[stage]}">\${stages[stage]}</span>
-        \`;
-        matList.appendChild(li);
-      });
-
-      matWrap.appendChild(matList);
-
-      // Assembly
-      card.appendChild(taskToggle);
-      card.appendChild(taskWrap);
-      card.appendChild(matToggle);
-      card.appendChild(matWrap);
-      container.appendChild(card);
-
-      taskToggle.onclick = () => taskWrap.style.display = taskWrap.style.display === "block" ? "none" : "block";
-      matToggle.onclick = () => matWrap.style.display = matWrap.style.display === "block" ? "none" : "block";
-    }
-
-    function toggleTask(i) {
-      data.tasks[i].complete = !data.tasks[i].complete;
-      save();
-    }
-
-    function renameTask(i, text) {
-      data.tasks[i].name = text.trim();
-      save();
-    }
-
-    function cycleStage(i) {
-      const current = data.materials[i].stage || 0;
-      data.materials[i].stage = (current + 1) % 5;
-      save();
-    }
-
-    function save() {
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ [tech]: { [project]: data } }),
-        headers: { "Content-Type": "application/json" }
-      }).then(() => renderTracker());
-    }
-
-    window.onload = () => { getParams(); fetchProject(); };
-  </script>
+  <main id="tracker">Loading...</main>
+  <button id="toggleEdit">Toggle Edit</button>
+  <script src="main.js"></script>
 </body>
 </html>
