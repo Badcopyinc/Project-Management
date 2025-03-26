@@ -2,18 +2,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>M3T Technician Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <img src="Final-M3T-Logo-White.png" alt="M3T Logo" class="logo" />
-    <h1 class="dashboard-title">M3T Technician Dashboard</h1>
+    <img src="logo.png" alt="M3T Logo" class="logo">
+    <h1 class="title">M3T Technician Dashboard</h1>
   </header>
-  <main id="tech-list" class="centered">
-    Loading...
+  <main>
+    <button onclick="addTechnician()">+ Add Technician</button>
+    <div id="techList"></div>
   </main>
   <script src="main.js"></script>
 </body>

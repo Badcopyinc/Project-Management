@@ -1,29 +1,29 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-  const techData = {
-    Chris: [{ name: "Project A", percent: 25 }],
-    Mike: [{ name: "Project B", percent: 50 }],
-  };
-
-  const container = document.getElementById("tech-list");
-  container.innerHTML = "";
-
-  for (const [tech, projects] of Object.entries(techData)) {
-    const techEl = document.createElement("div");
-    techEl.className = "tech";
-    techEl.textContent = tech;
-    container.appendChild(techEl);
-
-    projects.forEach(proj => {
-      const projEl = document.createElement("div");
-      projEl.className = "project";
-      projEl.innerHTML = \`
-        <a href="project.html?tech=\${tech}&project=\${encodeURIComponent(proj.name)}">\${proj.name} – \${proj.percent}%</a>
-        <div class="progress-container">
-          <div class="progress-bar" style="width: \${proj.percent}%"></div>
-        </div>
-      \`;
-      container.appendChild(projEl);
-    });
+function addTechnician() {
+  const name = prompt("Enter technician name:");
+  if (name) {
+    const techDiv = document.createElement("div");
+    techDiv.innerHTML = `<h3>${name} <button onclick="addProject('${name}')">+ Add Project</button></h3><div id="${name}-projects"></div>`;
+    document.getElementById("techList").appendChild(techDiv);
   }
-});
+}
+
+function addProject(techName) {
+  const project = prompt("Enter project name:");
+  if (project) {
+    const projectDiv = document.createElement("div");
+    projectDiv.innerHTML = `<h4>${project} 
+      <button onclick="addTask('${techName}', '${project}')">+ Task</button> 
+      <button onclick="addMaterial('${techName}', '${project}')">+ Material</button>
+    </h4>`;
+    document.getElementById(`${techName}-projects`).appendChild(projectDiv);
+  }
+}
+
+function addTask(tech, project) {
+  alert(`Add task to ${project} for ${tech}`);
+}
+
+function addMaterial(tech, project) {
+  alert(`Add material to ${project} for ${tech}`);
+}

@@ -1,52 +1,23 @@
 
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: #f5f7f6;
-  color: #000;
-}
-header {
-  display: flex;
-  align-items: center;
-  background: #111;
-  color: white;
-  padding: 10px;
+  text-align: center;
+  background: #f4f4f4;
 }
 .logo {
-  height: 40px;
-  margin-right: 10px;
+  height: 50px;
+  margin: 10px;
 }
-.dashboard-title {
-  font-size: 1.5em;
-  color: #87CEFA;
+.title {
+  font-size: 24px;
+  color: #00aaff;
 }
-.centered {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-.tech {
-  background: white;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  padding: 10px;
-  font-weight: bold;
-}
-.project {
-  background: #f0f0f0;
-  padding: 10px;
-  margin-left: 10px;
-  margin-bottom: 10px;
-}
-.progress-container {
-  background-color: #ddd;
-  border-radius: 10px;
-  overflow: hidden;
-  height: 10px;
-  margin-top: 5px;
-}
-.progress-bar {
-  height: 100%;
-  background-color: #4caf50;
-  width: 0%;
+button {
+  background: #00aaff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
