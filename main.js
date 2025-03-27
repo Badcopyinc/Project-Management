@@ -35,7 +35,7 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
         const projectDiv = document.createElement("div");
         projectDiv.className = "project";
         projectDiv.innerHTML = `
-          <p class="project-name">${projectName}</p>
+          <a href="project.html?tech=${encodeURIComponent(tech)}&project=${encodeURIComponent(projectName)}" class="project-name">${projectName}</a>
           <div class="progress-bar-container">
             <div class="progress-bar" style="width:${percent}%"></div>
           </div>
