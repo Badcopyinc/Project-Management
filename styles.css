@@ -125,5 +125,5 @@ header {
   transition: width 0.3s ease-in-out;
   display: flex;
   align-items: left;
-  justify-content: center;
+  justify-content: left;
 }
