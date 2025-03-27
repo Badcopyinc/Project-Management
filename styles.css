@@ -120,10 +120,11 @@ header {
   color: white;
   text-align: center;
   line-height: 25px;
-  padding: 0 6px;
+  padding: 0;
   white-space: nowrap;
   transition: width 0.3s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  overflow: hidden;
+  
+  
 }
