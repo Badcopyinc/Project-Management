@@ -102,7 +102,7 @@ header {
 }
 
 .progress-bar-inline {
-  background-color: transparent;
+  background-color: #e0e0e0;
   border: 2px solid green;
   border-radius: 5px;
   height: 25px;
