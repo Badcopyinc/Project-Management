@@ -128,3 +128,13 @@ header {
   
   
 }
+
+  h2, h3 {
+  color: black;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+section {
+  margin: 20px 0;
+}
