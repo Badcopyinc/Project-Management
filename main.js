@@ -3,7 +3,7 @@ const technicianContainer = document.getElementById('technicianContainer');
 fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec')
   .then(res => res.json())
   .then(data => {
-    const raw = data.data || [];
+    const raw = Array.isArray(data) ? data : data.data || [];
     console.log("RAW SHEET ROWS:", raw);
     technicianContainer.innerHTML = '';
 
