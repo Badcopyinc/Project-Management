@@ -33,13 +33,14 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
         const percent = total ? Math.round((completed / total) * 100) : 0;
 
         const projectDiv = document.createElement("div");
-        projectDiv.className = "project";
+        projectDiv.className = "project-row";
         projectDiv.innerHTML = `
-          <p class="project-name">${projectName}</p>
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width:${percent}%"></div>
+          <span class="project-name">${projectName}</span>
+          <div class="progress-wrapper">
+            <div class="progress-bar-inline">
+              <div class="progress-bar-fill" style="width:${percent}%">${percent}%</div>
+            </div>
           </div>
-          <p>${percent}% Complete</p>
         `;
 
         projectList.appendChild(projectDiv);
@@ -67,13 +68,14 @@ fetch('https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLi
         if (e.key === "Enter" && input.value.trim()) {
           const newProjectName = input.value.trim();
           const projectDiv = document.createElement("div");
-          projectDiv.className = "project";
+          projectDiv.className = "project-row";
           projectDiv.innerHTML = `
-            <p class="project-name">${newProjectName}</p>
-            <div class="progress-bar-container">
-              <div class="progress-bar" style="width:0%"></div>
+            <span class="project-name">${newProjectName}</span>
+            <div class="progress-wrapper">
+              <div class="progress-bar-inline">
+                <div class="progress-bar-fill" style="width:0%">0%</div>
+              </div>
             </div>
-            <p>0% Complete</p>
           `;
           projectList.appendChild(projectDiv);
           projectList.appendChild(addBtn);
