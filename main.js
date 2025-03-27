@@ -30,7 +30,7 @@ fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xp
         const materials = projectData.materials || [];
 
         const total = tasks.length + materials.length;
-        const completed = tasks.filter(t => t.complete === true).length + materials.filter(m => m.status === 3).length;
+        const completed = tasks.filter(t => t.status === 1).length + materials.filter(m => m.status === 3).length;
         const percent = total ? Math.round((completed / total) * 100) : 0;
 
         const projectDiv = document.createElement("div");
