@@ -79,3 +79,43 @@ header {
   display: block;
   margin: 10px auto; /* centers horizontally */
 }
+
+.project-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  gap: 10px;
+}
+
+.project-name {
+  flex: 1 1 200px;
+  font-weight: bold;
+  color: #4b0082;
+  text-align: left;
+}
+
+.progress-wrapper {
+  flex: 1 1 150px;
+  min-width: 150px;
+}
+
+.progress-bar-inline {
+  background-color: transparent;
+  border: 2px solid green;
+  border-radius: 5px;
+  height: 25px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background-color: green;
+  height: 100%;
+  color: white;
+  text-align: center;
+  line-height: 25px;
+  white-space: nowrap;
+  transition: width 0.3s ease-in-out;
+}
