@@ -5,27 +5,29 @@ fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xp
   .then(data => {
     const raw = Array.isArray(data) ? data : data.data || [];
     console.log("RAW SHEET ROWS:", raw);
-    technicianContainer.innerHTML = '';
 
+    technicianContainer.innerHTML = '';
     const grouped = {};
 
-    raw.forEach(row => { 
-      const tech = row[0]; 
-      const project = row[1]; 
-      const type = (row[2] || "").toLowerCase(); 
-      const name = row[3]; 
-      const status = +row[4] || 0; 
+    // Group by technician -> project -> tasks/materials
+    raw.forEach(row => {
+      const tech = row[0];
+      const project = row[1];
+      const type = (row[2] || "").toLowerCase();
+      const name = row[3];
+      const status = +row[4] || 0;
 
-      if (!grouped[tech]) grouped[tech] = {}; 
-      if (!grouped[tech][project]) grouped[tech][project] = { tasks: [], materials: [] }; 
+      if (!grouped[tech]) grouped[tech] = {};
+      if (!grouped[tech][project]) grouped[tech][project] = { tasks: [], materials: [] };
 
-      if (type === "task") { 
-        grouped[tech][project].tasks.push({ name, status }); 
-      } else if (type === "material") { 
-        grouped[tech][project].materials.push({ name, status }); 
+      if (type === "task") {
+        grouped[tech][project].tasks.push({ name, status });
+      } else if (type === "material") {
+        grouped[tech][project].materials.push({ name, status });
       }
-    }); 
+    });
 
+    // Build UI
     Object.entries(grouped).forEach(([tech, projects]) => {
       const techDiv = document.createElement("div");
       techDiv.className = "technician-card";
@@ -38,12 +40,11 @@ fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xp
       projectList.style.display = "none";
       projectList.className = "project-list";
 
-      // Add collapse toggle
       techHeader.addEventListener("click", () => {
         projectList.style.display = projectList.style.display === "none" ? "block" : "none";
       });
 
-      // Render existing projects
+      // List all projects
       Object.entries(projects).forEach(([projectName, projectData]) => {
         const tasks = projectData.tasks || [];
         const materials = projectData.materials || [];
@@ -66,7 +67,7 @@ fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xp
         projectList.appendChild(projectDiv);
       });
 
-      // Create add project button + input
+      // Add project button + input
       const addBtn = document.createElement("button");
       addBtn.textContent = "+ Add Project";
       addBtn.className = "add-project-btn";
@@ -77,13 +78,11 @@ fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xp
       input.style.display = "none";
       input.className = "add-project-input";
 
-      // Add project button toggle
       addBtn.addEventListener("click", () => {
         input.style.display = input.style.display === "none" ? "block" : "none";
         if (input.style.display === "block") input.focus();
       });
 
-      // Add project on Enter
       input.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && input.value.trim()) {
           const newProjectName = input.value.trim();
@@ -105,11 +104,8 @@ fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xp
         }
       });
 
-      // Append button/input to projectList initially (only shows when expanded)
       projectList.appendChild(addBtn);
       projectList.appendChild(input);
-
-      // Build the tech card
       techDiv.appendChild(techHeader);
       techDiv.appendChild(projectList);
       technicianContainer.appendChild(techDiv);
