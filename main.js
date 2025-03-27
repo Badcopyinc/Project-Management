@@ -9,24 +9,24 @@ fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xp
 
     const grouped = {};
 
-  raw.forEach(row => { 
-    const tech = row[0]; 
-    const project = row[1]; 
-    const type = (row[2] || "").toLowerCase(); 
-    const name = row[3]; 
-    const status = +row[4] || 0; 
+    raw.forEach(row => { 
+      const tech = row[0]; 
+      const project = row[1]; 
+      const type = (row[2] || "").toLowerCase(); 
+      const name = row[3]; 
+      const status = +row[4] || 0; 
 
-    if (!grouped[tech]) grouped[tech] = {}; 
-    if (!grouped[tech][project]) grouped[tech][project] = { tasks: [], materials: [] }; 
+      if (!grouped[tech]) grouped[tech] = {}; 
+      if (!grouped[tech][project]) grouped[tech][project] = { tasks: [], materials: [] }; 
 
-    if (type === "task") { 
-      grouped[tech][project].tasks.push({ name, status }); 
-    } else if (type === "material") { 
-      grouped[tech][project].materials.push({ name, status }); 
-    }
-  }); 
+      if (type === "task") { 
+        grouped[tech][project].tasks.push({ name, status }); 
+      } else if (type === "material") { 
+        grouped[tech][project].materials.push({ name, status }); 
+      }
+    }); 
 
-  Object.entries(grouped).forEach(([tech, projects]) => {
+    Object.entries(grouped).forEach(([tech, projects]) => {
       const techDiv = document.createElement("div");
       techDiv.className = "technician-card";
 
