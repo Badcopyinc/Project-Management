@@ -22,6 +22,11 @@ header {
   padding: 0.5rem 1rem;
   border-bottom: 2px solid #ccc;
   margin-bottom: 1rem;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
 }
 
 .logo-link {
