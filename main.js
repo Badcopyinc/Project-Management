@@ -1,6 +1,6 @@
 const technicianContainer = document.getElementById('technicianContainer');
 
-fetch('https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec')
+fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/api/getData')
   .then(res => res.json())
   .then(data => {
     console.log("Formatted JSON loaded:", data);
