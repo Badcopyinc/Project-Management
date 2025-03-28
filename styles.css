@@ -135,6 +135,13 @@ header {
   margin-bottom: 10px;
 }
 
+  #project-name {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
 section {
   margin: 20px 0;
 }
