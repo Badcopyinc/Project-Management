@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProjectData(tech, project) {
-  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/api/getData")
+  fetch("fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/data')
+")
     .then(res => res.json())
     .then(data => {
       const projectData = data[tech]?.[project];
@@ -76,7 +77,8 @@ function loadProjectData(tech, project) {
 }
 
 function updateStatus(tech, project, type, name, status, callback) {
-  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/api/getData", {
+  fetch("fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/data')
+", {
     method: "POST",
     body: JSON.stringify({ tech, project, type, name, status })
   })
