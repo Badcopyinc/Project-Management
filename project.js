@@ -77,7 +77,7 @@ function loadProjectData(tech, project) {
 }
 
 function updateStatus(tech, project, type, name, status, callback) {
-  fetch("fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/data')
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/update)
 ", {
     method: "POST",
     body: JSON.stringify({ tech, project, type, name, status })
