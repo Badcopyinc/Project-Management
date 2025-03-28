@@ -128,3 +128,11 @@ header {
   
   
 }
+
+
+.dashboard-title {
+  font-size: 22px;
+  color: #00aaff;
+  margin-left: auto;
+  text-align: right;
+}
