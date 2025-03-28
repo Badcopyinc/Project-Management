@@ -1,6 +1,7 @@
 const technicianContainer = document.getElementById('technicianContainer');
 
-fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/api/getData')
+fetch('fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/data')
+')
   .then(res => res.json())
   .then(data => {
     console.log("Formatted JSON loaded:", data);
