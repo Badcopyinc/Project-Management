@@ -148,26 +148,25 @@ html, body {
   padding: 0;
   height: 100%;
   width: 100%;
+  scroll-padding-top: 0;
   background-color: #adadad;
+  /* Tell iOS to treat this like a web app (remove browser chrome safe area gap) */
+  padding-top: env(safe-area-inset-top, 0);
 }
 
 body {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
+  /* Safe area padding fallback for iOS devices with notches */
+  padding-top: constant(safe-area-inset-top, 0); /* legacy iOS */
+  padding-top: env(safe-area-inset-top, 0);      /* modern iOS */
 }
 
 header {
-  margin: 0 !important;
+  position: sticky;
+  top: 0;
+  margin: 0;
   padding-top: env(safe-area-inset-top, 0);
-  padding-bottom: 0.5rem;
-  position: relative;
-  z-index: 1000;
   background-color: #1c1c1c;
+  z-index: 1000;
   width: 100vw;
-}
-
-@supports (padding-top: env(safe-area-inset-top)) {
-  body {
-    padding-top: env(safe-area-inset-top);
-  }
+  border-bottom: 2px solid #ccc;
 }
