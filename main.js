@@ -6,99 +6,69 @@ fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/data', {
     'ngrok-skip-browser-warning': 'true'
   }
 })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Formatted JSON loaded:", data);
-    technicianContainer.innerHTML = '';
+.then(res => res.json())
+.then(data => {
+  console.log("Formatted JSON loaded:", data);
+  technicianContainer.innerHTML = '';
 
-    Object.entries(data).forEach(([tech, projects]) => {
-      const techDiv = document.createElement("div");
-      techDiv.className = "technician-card";
+  const techs = data.technicians;
+  Object.entries(techs).forEach(([techName, techData]) => {
+    const techCard = document.createElement('div');
+    techCard.className = 'technician-card';
 
-      const techHeader = document.createElement("h2");
-      techHeader.textContent = tech;
-      techHeader.style.cursor = "pointer";
+    const techHeader = document.createElement('h2');
+    techHeader.textContent = techName;
+    techHeader.classList.add('tech-name');
+    techHeader.style.cursor = 'pointer';
 
-      const projectList = document.createElement("div");
-      projectList.style.display = "none";
-      projectList.className = "project-list";
+    const projectList = document.createElement('div');
+    projectList.className = 'project-list';
+    projectList.style.display = 'none';
 
-      // Add collapse toggle
-      techHeader.addEventListener("click", () => {
-        projectList.style.display = projectList.style.display === "none" ? "block" : "none";
-      });
+    let totalTasks = 0;
+    let completedTasks = 0;
 
-      // Render existing projects
-      Object.entries(projects).forEach(([projectName, projectData]) => {
-        const tasks = projectData.tasks || [];
-        const materials = projectData.materials || [];
+    Object.values(techData.projects || {}).forEach(project => {
+      const projectName = Object.keys(techData.projects).find(
+        name => techData.projects[name] === project
+      );
 
-        const total = tasks.length + materials.length;
-        const completed = tasks.filter(t => t.status === 1).length + materials.filter(m => m.status === 3).length;
-        const percent = total ? Math.round((completed / total) * 100) : 0;
+      const taskCount = project.tasks?.length || 0;
+      const completeCount = project.tasks?.filter(t => t.complete).length || 0;
 
-        const projectDiv = document.createElement("div");
-        projectDiv.className = "project";
-        projectDiv.innerHTML = `
-          <a href="project.html?tech=${encodeURIComponent(tech)}&project=${encodeURIComponent(projectName)}" class="project-name">${projectName}</a>
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width:${percent}%"></div>
-          </div>
-          <p>${percent}% Complete</p>
-        `;
+      totalTasks += taskCount;
+      completedTasks += completeCount;
 
-        projectList.appendChild(projectDiv);
-      });
-
-      // Create add project button + input
-      const addBtn = document.createElement("button");
-      addBtn.textContent = "+ Add Project";
-      addBtn.className = "add-project-btn";
-
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "Enter project name";
-      input.style.display = "none";
-      input.className = "add-project-input";
-
-      // Add project button toggle
-      addBtn.addEventListener("click", () => {
-        input.style.display = input.style.display === "none" ? "block" : "none";
-        if (input.style.display === "block") input.focus();
-      });
-
-      // Add project on Enter
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && input.value.trim()) {
-          const newProjectName = input.value.trim();
-          const projectDiv = document.createElement("div");
-          projectDiv.className = "project";
-          projectDiv.innerHTML = `
-            <p class="project-name">${newProjectName}</p>
-            <div class="progress-bar-container">
-              <div class="progress-bar" style="width:0%"></div>
-            </div>
-            <p>0% Complete</p>
-          `;
-          projectList.appendChild(projectDiv);
-          projectList.appendChild(addBtn);
-          projectList.appendChild(input);
-          input.value = "";
-          input.style.display = "none";
-        }
-      });
-
-      // Append button/input to projectList initially (only shows when expanded)
-      projectList.appendChild(addBtn);
-      projectList.appendChild(input);
-
-      // Build the tech card
-      techDiv.appendChild(techHeader);
-      techDiv.appendChild(projectList);
-      technicianContainer.appendChild(techDiv);
+      const projectDiv = document.createElement('div');
+      projectDiv.className = 'project-entry';
+      projectDiv.innerHTML = `
+        <strong>${projectName}</strong><br>
+        ${Math.round((completeCount / taskCount) * 100 || 0)}% Complete
+      `;
+      projectList.appendChild(projectDiv);
     });
-  })
-  .catch(error => {
-    console.error("Data fetch error:", error);
-    technicianContainer.innerHTML = "<p style='color:red;'>Failed to load project data.</p>";
+
+    const progressDiv = document.createElement('div');
+    progressDiv.textContent = `${Math.round((completedTasks / totalTasks) * 100 || 0)}% Complete`;
+
+    const addButton = document.createElement('button');
+    addButton.textContent = '+ Add Project';
+    addButton.className = 'add-project-btn';
+
+    // Toggle logic
+    techHeader.addEventListener('click', () => {
+      projectList.style.display = projectList.style.display === 'none' ? 'block' : 'none';
+    });
+
+    techCard.appendChild(techHeader);
+    techCard.appendChild(progressDiv);
+    techCard.appendChild(projectList);
+    techCard.appendChild(addButton);
+
+    technicianContainer.appendChild(techCard);
   });
+})
+.catch(err => {
+  console.error("Data fetch error:", err);
+  technicianContainer.innerHTML = '<p style="color:red">Failed to load project data.</p>';
+});
