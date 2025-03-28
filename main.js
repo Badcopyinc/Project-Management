@@ -1,6 +1,7 @@
 const technicianContainer = document.getElementById('technicianContainer');
 
 fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/data', {
+  method: 'GET',
   headers: {
     'ngrok-skip-browser-warning': 'true'
   }
