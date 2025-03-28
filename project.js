@@ -1,10 +1,13 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
-  const tech = decodeURIComponent(params.get("tech"));
-  const project = decodeURIComponent(params.get("project"));
+  const tech = params.get("tech");
+  const project = params.get("project");
   document.getElementById("project-name").textContent = project;
 
+  loadProjectData(tech, project);
+});
+
+function loadProjectData(tech, project) {
   fetch("https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec")
     .then(res => res.json())
     .then(data => {
@@ -24,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cb = document.createElement("input");
         cb.type = "checkbox";
         cb.checked = task.complete === true || task.status === 1;
-        cb.onchange = () => updateStatus(tech, project, "task", task.name, cb.checked ? 1 : 0);
+        cb.onchange = () => updateStatus(tech, project, "task", task.name, cb.checked ? 1 : 0, () => loadProjectData(tech, project));
         li.appendChild(cb);
         li.append(` ${task.name}`);
         taskList.appendChild(li);
@@ -44,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cb.checked = stage > 0;
         cb.onclick = () => {
           const newStage = (stage + 1) % 4;
-          updateStatus(tech, project, "material", mat.name, newStage);
+          updateStatus(tech, project, "material", mat.name, newStage, () => loadProjectData(tech, project));
         };
         li.appendChild(cb);
 
@@ -54,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         stageBtn.style.marginLeft = "0.5rem";
         stageBtn.onclick = () => {
           const newStage = (stage + 1) % 4;
-          updateStatus(tech, project, "material", mat.name, newStage);
+          updateStatus(tech, project, "material", mat.name, newStage, () => loadProjectData(tech, project));
         };
 
         li.appendChild(stageBtn);
@@ -70,11 +73,20 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("progress-bar").textContent = `${percent}%`;
       document.getElementById("progress-percent").textContent = `${percent}%`;
     });
-});
+}
 
-function updateStatus(tech, project, type, name, status) {
+function updateStatus(tech, project, type, name, status, callback) {
   fetch("https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec", {
     method: "POST",
     body: JSON.stringify({ tech, project, type, name, status })
-  }).then(() => location.reload());
+  })
+    .then(res => res.text())
+    .then(text => {
+      if (text === "Success") {
+        callback?.(); // Refresh UI safely after update
+      } else {
+        console.error("Update failed:", text);
+      }
+    })
+    .catch(err => console.error("Update error:", err));
 }
