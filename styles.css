@@ -144,20 +144,40 @@ header h1.title {
 
 /* Ensure header hugs top of screen on all devices */
 html, body {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
   height: 100%;
   width: 100%;
-  scroll-padding-top: 0 !important;
+  scroll-padding-top: 0;
+  background-color: #adadad;
 }
 
 body {
-  padding-top: constant(safe-area-inset-top); /* older iOS syntax */
-  padding-top: env(safe-area-inset-top);      /* newer syntax */
+  padding-top: constant(safe-area-inset-top, 0);
+  padding-top: env(safe-area-inset-top, 0);
 }
 
 header {
-  margin-top: 0 !important;
   padding-top: env(safe-area-inset-top, 0);
-  border-top: none;
+  margin-top: 0;
+  position: relative;
+  z-index: 1000;
+}
+
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+  }
 }
