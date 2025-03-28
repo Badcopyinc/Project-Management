@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProjectData(tech, project) {
-  fetch("https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec")
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/api/getData")
     .then(res => res.json())
     .then(data => {
       const projectData = data[tech]?.[project];
@@ -76,7 +76,7 @@ function loadProjectData(tech, project) {
 }
 
 function updateStatus(tech, project, type, name, status, callback) {
-  fetch("https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec", {
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/api/getData", {
     method: "POST",
     body: JSON.stringify({ tech, project, type, name, status })
   })
