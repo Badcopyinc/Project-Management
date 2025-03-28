@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const tech = params.get("tech");
@@ -8,11 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProjectData(tech, project) {
-  fetch("fetch('https://adjusted-bluejay-gratefully.ngrok-free.app/data')
-")
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/data")
     .then(res => res.json())
     .then(data => {
-      const projectData = data[tech]?.[project];
+      const projectData = data.technicians?.[tech]?.projects?.[project];
       if (!projectData) {
         document.getElementById("project-name").textContent = "Project Not Found";
         return;
@@ -36,9 +36,10 @@ function loadProjectData(tech, project) {
 
       const matList = document.getElementById("material-list");
       matList.innerHTML = "";
-      materials.forEach(mat => {
+      materials.forEach((mat, index) => {
         const li = document.createElement("li");
         li.textContent = `${mat.name} `;
+
         const stage = mat.stage ?? mat.status ?? 0;
         const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
         const colors = ["gold", "red", "green", "blue"];
@@ -47,8 +48,9 @@ function loadProjectData(tech, project) {
         cb.type = "checkbox";
         cb.checked = stage > 0;
         cb.onclick = () => {
-          const newStage = (stage + 1) % 4;
-          updateStatus(tech, project, "material", mat.name, newStage, () => loadProjectData(tech, project));
+          const current = materials[index].stage ?? 0;
+          const nextStage = (current + 1) % 4;
+          updateStatus(tech, project, "material", mat.name, nextStage, () => loadProjectData(tech, project));
         };
         li.appendChild(cb);
 
@@ -56,9 +58,11 @@ function loadProjectData(tech, project) {
         stageBtn.textContent = stages[stage] || stages[0];
         stageBtn.style.color = colors[stage] || "black";
         stageBtn.style.marginLeft = "0.5rem";
+        stageBtn.style.cursor = "pointer";
         stageBtn.onclick = () => {
-          const newStage = (stage + 1) % 4;
-          updateStatus(tech, project, "material", mat.name, newStage, () => loadProjectData(tech, project));
+          const current = materials[index].stage ?? 0;
+          const nextStage = (current + 1) % 4;
+          updateStatus(tech, project, "material", mat.name, nextStage, () => loadProjectData(tech, project));
         };
 
         li.appendChild(stageBtn);
@@ -77,15 +81,22 @@ function loadProjectData(tech, project) {
 }
 
 function updateStatus(tech, project, type, name, status, callback) {
-  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/update)
-", {
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/update", {
     method: "POST",
-    body: JSON.stringify({ tech, project, type, name, status })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tech,
+      project,
+      type,
+      name,
+      status,
+      updatedBy: "Technician" // Change this to actual username when auth is added
+    })
   })
     .then(res => res.text())
     .then(text => {
       if (text === "Success") {
-        callback?.(); // Refresh UI safely after update
+        callback?.();
       } else {
         console.error("Update failed:", text);
       }
