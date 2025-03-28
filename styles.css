@@ -141,3 +141,9 @@ header h1.title {
     height: 40px;
   }
 }
+
+/* Ensure header hugs top of screen on all devices */
+html, body {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
