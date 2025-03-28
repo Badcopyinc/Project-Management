@@ -6,17 +6,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("project-name").textContent = project;
 
   fetch("https://script.google.com/macros/s/AKfycbwkHVn_1Jj-qhZRCzxZlLKqD5QUugf_xpb-UQJmKPcaM72bjbNMZv2_iEb5Ga7kqfoiWQ/exec")
-    .then(res => res.json())
     .then(data => {
-      const tasks = [];
-      const materials = [];
+  const urlParams = new URLSearchParams(window.location.search);
+  const tech = decodeURIComponent(urlParams.get("tech"));
+  const project = decodeURIComponent(urlParams.get("project"));
 
-      data.forEach(([t, p, type, name, status]) => {
-        if (t === tech && p === project) {
-          if (type === "task") tasks.push({ name, status: parseInt(status) });
-          if (type === "material") materials.push({ name, status: parseInt(status) });
-        }
-      });
+  const projectData = data[tech]?.[project];
+  if (!projectData) {
+    document.getElementById("project-name").textContent = "Project Not Found";
+    return;
+  }
 
       // Render Tasks
       const taskList = document.getElementById("task-list");
