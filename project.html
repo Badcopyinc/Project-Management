@@ -16,24 +16,39 @@
 </header>
 
   <main>
-    <div id="project-container">
-      <h2 id="project-name"></h2>
-      <div id="progress-container">
-  <div id="progress-bar" class="progress-fill">0%</div>
-</div>
+  <div id="project-container">
+    <h2 id="project-name"></h2>
+    <div class="progress-bar-bg">
+      <div class="progress-fill" id="progress-bar">0%</div>
+    </div>
 
-      <section>
-        <h3>Tasks</h3>
+    <!-- Collapsible: Tasks -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection('tasks-section')">Tasks</div>
+      <div class="collapsible-content" id="tasks-section">
         <ul id="task-list"></ul>
-        <button onclick="addTask()">+ Add Task</button>
-      </section>
-      <section>
-        <h3>Materials</h3>
+        <button class="add-task-btn" onclick="addTask()">+ Add Task</button>
+      </div>
+    </div>
+
+    <!-- Collapsible: Materials -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection('materials-section')">Materials</div>
+      <div class="collapsible-content" id="materials-section">
         <ul id="material-list"></ul>
         <button onclick="addMaterial()">+ Add Material</button>
-      </section>
+      </div>
     </div>
-  </main>
+
+    <!-- Collapsible: Scope of Work -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleSection('scope-section')">Scope of Work</div>
+      <div class="collapsible-content" id="scope-section">
+        <div id="scope-text" class="scrollable-scope"></div>
+      </div>
+    </div>
+  </div>
+</main>
 
   <script src="project.js"></script>
 </body>
