@@ -219,9 +219,6 @@ li > ul {
   display: none;
 }
 
-#project-container {
-  text-align: center;
-}
 
 button.add-task {
   background-color: #00bfff;
