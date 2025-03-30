@@ -157,7 +157,7 @@ header h1.title {
 .title {
   color: #00bfff;
   font-size: 1.5rem;
-  text-align: right;
+  text-align: center;
   flex: 1;
   margin-left: auto;
 }
