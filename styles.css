@@ -14,7 +14,19 @@ body {
 }
 
 /* Header Styles */
-
+header {
+  background-color: #1c1c1c;
+  padding-top: env(safe-area-inset-top, 0);
+  margin-top: calc(-1 * env(safe-area-inset-top, 0)); /* pulls header up into safe zone */
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-bottom: 2px solid #ccc;
+}
 
 .logo-link {
   display: flex;
@@ -53,7 +65,13 @@ header h1.title {
   padding: 1rem;
 }
 
-.tech-
+.tech-header {
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
 
 .project-entry {
   padding: 0.5rem 1rem;
@@ -110,7 +128,11 @@ header h1.title {
 }
 
 @media (max-width: 600px) {
-  
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
   .title {
     font-size: 1.2rem;
@@ -123,7 +145,16 @@ header h1.title {
 }
 
 /* Ensure header hugs top of screen on all devices */
-
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  scroll-padding-top: 0;
+  background-color: #adadad;
+  /* Tell iOS to treat this like a web app (remove browser chrome safe area gap) */
+  padding-top: env(safe-area-inset-top, 0);
+}
 
 body {
   /* Safe area padding fallback for iOS devices with notches */
@@ -131,25 +162,13 @@ body {
   padding-top: env(safe-area-inset-top, 0);      /* modern iOS */
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background-color: #adadad;
-  padding-top: env(safe-area-inset-top, 0);
-}
-
 header {
-  background-color: #1c1c1c;
-  margin-top: calc(-1 * env(safe-area-inset-top, 0));
-  padding-top: env(safe-area-inset-top, 0);
   position: sticky;
   top: 0;
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 0);
+  background-color: #1c1c1c;
   z-index: 1000;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  width: 100vw;
   border-bottom: 2px solid #ccc;
 }
