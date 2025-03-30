@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("project-name").textContent = project;
 
   loadProjectData(tech, project);
-  setupCollapsibles();
 });
 
 function loadProjectData(tech, project) {
@@ -26,7 +25,7 @@ function loadProjectData(tech, project) {
       const materials = projectData.materials || [];
       const scopeText = projectData.scope || "No scope of work provided.";
 
-      document.getElementById("scope-content").textContent = scopeText;
+      document.getElementById("scope-text").textContent = scopeText;
 
       const taskList = document.getElementById("task-list");
       taskList.innerHTML = "";
@@ -123,25 +122,6 @@ function loadProjectData(tech, project) {
     });
 }
 
-function setupCollapsibles() {
-  const sections = [
-    { headerId: "tasks-header", contentId: "task-list" },
-    { headerId: "materials-header", contentId: "material-list" },
-    { headerId: "scope-header", contentId: "scope-content" },
-  ];
-
-  sections.forEach(({ headerId, contentId }) => {
-    const header = document.getElementById(headerId);
-    const content = document.getElementById(contentId);
-
-    if (header && content) {
-      header.addEventListener("click", () => {
-        content.classList.toggle("hidden");
-      });
-    }
-  });
-}
-
 function updateStatus(tech, project, type, name, status, callback) {
   fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/update", {
     method: "POST",
@@ -223,4 +203,10 @@ function saveNewItem(type, name) {
       }
     })
     .catch(err => console.error("Add error:", err));
+}
+
+// ✅ Needed for collapsible sections to function
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle("hidden");
 }
