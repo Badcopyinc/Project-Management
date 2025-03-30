@@ -136,12 +136,15 @@ header h1.title {
   .title {
     font-size: 1.2rem;
     margin: 0.5rem 0 0 0;
+    text-align: center;
+    flex: unset; /* override the "flex: 1" from desktop */
   }
 
   .logo {
     height: 40px;
   }
 }
+
 
 /* Project Page Layout */
 #project-container {
