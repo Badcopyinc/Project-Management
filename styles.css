@@ -154,7 +154,7 @@ header h1.title {
 }
 
 /* Match title color to main dashboard */
-.dashboard-title {
+.title {
   color: #00bfff;
   font-size: 1.5rem;
   text-align: right;
