@@ -1,3 +1,4 @@
+
 /* General Reset */
 * {
   box-sizing: border-box;
@@ -49,8 +50,6 @@ header {
   margin-left: 1rem;
 }
 
-
-/* Adjust title for mobile */
 header h1.title {
   font-size: 1.5rem;
   color: #00bfff;
@@ -58,7 +57,6 @@ header h1.title {
   flex: 1;
 }
 
-/* Technician Section */
 .tech-section {
   border: 2px solid #333;
   border-radius: 8px;
@@ -95,7 +93,6 @@ header h1.title {
   transition: width 0.3s;
 }
 
-/* Overlay Modal */
 #addProjectOverlay {
   position: fixed;
   top: 0;
@@ -146,4 +143,32 @@ header h1.title {
   }
 }
 
+/* Project Page Layout */
+#project-container {
+  background: white;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
 
+/* Match title color to main dashboard */
+.dashboard-title {
+  color: #00bfff;
+  font-size: 1.5rem;
+  text-align: right;
+  flex: 1;
+  margin-left: auto;
+}
+
+/* Clean list styling */
+#task-list, #material-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1rem;
+}
+
+#task-list li, #material-list li {
+  padding: 0.5rem 0;
+}
