@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const tech = params.get("tech");
@@ -102,4 +101,63 @@ function updateStatus(tech, project, type, name, status, callback) {
       }
     })
     .catch(err => console.error("Update error:", err));
+}
+
+function addTask() {
+  const taskList = document.getElementById("task-list");
+  const li = document.createElement("li");
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "New task name";
+  input.onkeydown = (e) => {
+    if (e.key === "Enter" && input.value.trim()) {
+      saveNewItem("task", input.value.trim());
+    }
+  };
+  li.appendChild(input);
+  taskList.appendChild(li);
+  input.focus();
+}
+
+function addMaterial() {
+  const matList = document.getElementById("material-list");
+  const li = document.createElement("li");
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "New material name";
+  input.onkeydown = (e) => {
+    if (e.key === "Enter" && input.value.trim()) {
+      saveNewItem("material", input.value.trim());
+    }
+  };
+  li.appendChild(input);
+  matList.appendChild(li);
+  input.focus();
+}
+
+function saveNewItem(type, name) {
+  const params = new URLSearchParams(window.location.search);
+  const tech = params.get("tech");
+  const project = params.get("project");
+
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/addItem", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tech,
+      project,
+      type,
+      name,
+      updatedBy: "Technician"
+    })
+  })
+    .then(res => res.text())
+    .then((res) => {
+      if (res === "Success") {
+        loadProjectData(tech, project);
+      } else {
+        alert("Failed to add " + type);
+      }
+    })
+    .catch(err => console.error("Add error:", err));
 }
