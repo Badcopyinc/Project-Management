@@ -87,7 +87,13 @@ function loadProjectData(tech, project) {
 
         const stageBtn = document.createElement("span");
         stageBtn.textContent = stages[stage] || stages[0];
-        stageBtn.style.color = colors[stage] || "black";
+        stageBtn.className = [
+  "material-stage-yellow",
+  "material-stage-red",
+  "material-stage-green",
+  "material-stage-blue"
+][stage] || "";
+
         stageBtn.style.marginLeft = "0.5rem";
         stageBtn.style.cursor = "pointer";
         stageBtn.onclick = () => {
