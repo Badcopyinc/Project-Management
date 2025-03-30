@@ -229,3 +229,55 @@ button.add-task {
   cursor: pointer;
   margin-top: 0.5rem;
 }
+
+/* Collapse section headers */
+.collapsible-section {
+  margin-top: 2rem;
+}
+
+.collapsible-header {
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+}
+
+/* Content hidden by default */
+.collapsible-content {
+  display: none;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Show content when section is expanded */
+.collapsible-content.expanded {
+  display: block;
+}
+
+/* Add Task button styling */
+.add-task-btn {
+  background-color: #00bfff;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* Scrollable scope of work text */
+.scrollable-scope {
+  max-height: 200px;
+  overflow-y: auto;
+  background: #fafafa;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  text-align: left;
+  font-size: 0.95rem;
+}
