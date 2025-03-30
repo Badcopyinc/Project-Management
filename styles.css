@@ -206,3 +206,29 @@ li > ul {
   margin-top: -10px;
   margin-bottom: 1rem;
 }
+
+.collapsible-header {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  user-select: none;
+}
+
+.hidden {
+  display: none;
+}
+
+#project-container {
+  text-align: center;
+}
+
+button.add-task {
+  background-color: #00bfff;
+  color: black;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
