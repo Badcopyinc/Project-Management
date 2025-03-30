@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("project-name").textContent = project;
 
   loadProjectData(tech, project);
+  setupCollapsibles();
 });
 
 function loadProjectData(tech, project) {
@@ -23,62 +24,59 @@ function loadProjectData(tech, project) {
 
       const tasks = projectData.tasks || [];
       const materials = projectData.materials || [];
+      const scopeText = projectData.scope || "No scope of work provided.";
+
+      document.getElementById("scope-content").textContent = scopeText;
 
       const taskList = document.getElementById("task-list");
       taskList.innerHTML = "";
       tasks.forEach(task => {
-  const li = document.createElement("li");
+        const li = document.createElement("li");
 
-  // Main task checkbox (auto-derived from subtasks if present)
-  const cb = document.createElement("input");
-  cb.type = "checkbox";
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
 
-  const subtasks = task.subtasks || [];
-  const subDone = subtasks.filter(st => st.status === 1).length;
-  const isComplete = subtasks.length > 0 ? subDone === subtasks.length : task.complete === true || task.status === 1;
+        const subtasks = task.subtasks || [];
+        const subDone = subtasks.filter(st => st.status === 1).length;
+        const isComplete = subtasks.length > 0 ? subDone === subtasks.length : task.complete === true || task.status === 1;
 
-  cb.checked = isComplete;
-  cb.disabled = true; // Only subtasks are clickable if present
+        cb.checked = isComplete;
+        cb.disabled = true;
 
-  li.appendChild(cb);
-  li.append(` ${task.name}`);
+        li.appendChild(cb);
+        li.append(` ${task.name}`);
 
-  // Show subtasks if they exist
-  if (subtasks.length > 0) {
-    const subUl = document.createElement("ul");
+        if (subtasks.length > 0) {
+          const subUl = document.createElement("ul");
+          subtasks.forEach(sub => {
+            const subLi = document.createElement("li");
+            const subCb = document.createElement("input");
+            subCb.type = "checkbox";
+            subCb.checked = sub.status === 1;
+            subCb.onchange = () => {
+              updateStatus(tech, project, "subtask", `${task.name}|${sub.name}`, subCb.checked ? 1 : 0, () => loadProjectData(tech, project));
+            };
+            subLi.appendChild(subCb);
+            subLi.append(` ${sub.name}`);
+            subUl.appendChild(subLi);
+          });
+          li.appendChild(subUl);
+        }
 
-    subtasks.forEach(sub => {
-      const subLi = document.createElement("li");
-      const subCb = document.createElement("input");
-      subCb.type = "checkbox";
-      subCb.checked = sub.status === 1;
-
-      subCb.onchange = () => {
-        updateStatus(tech, project, "subtask", `${task.name}|${sub.name}`, subCb.checked ? 1 : 0, () => loadProjectData(tech, project));
-      };
-
-      subLi.appendChild(subCb);
-      subLi.append(` ${sub.name}`);
-      subUl.appendChild(subLi);
-    });
-
-    li.appendChild(subUl);
-  }
-
-  taskList.appendChild(li);
-});
+        taskList.appendChild(li);
+      });
 
       const matList = document.getElementById("material-list");
       matList.innerHTML = "";
       const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
-        const colors = ["gold", "red", "green", "blue"];
+      const colors = ["gold", "red", "green", "blue"];
 
       materials.forEach((mat, index) => {
         const li = document.createElement("li");
         li.textContent = `${mat.name} `;
 
         const stage = mat.stage ?? mat.status ?? 0;
-        
+
         const cb = document.createElement("input");
         cb.type = "checkbox";
         cb.checked = stage > 0;
@@ -92,12 +90,11 @@ function loadProjectData(tech, project) {
         const stageBtn = document.createElement("span");
         stageBtn.textContent = stages[stage] || stages[0];
         stageBtn.className = [
-  "material-stage-yellow",
-  "material-stage-red",
-  "material-stage-green",
-  "material-stage-blue"
-][stage] || "";
-
+          "material-stage-yellow",
+          "material-stage-red",
+          "material-stage-green",
+          "material-stage-blue"
+        ][stage] || "";
         stageBtn.style.marginLeft = "0.5rem";
         stageBtn.style.cursor = "pointer";
         stageBtn.onclick = () => {
@@ -111,21 +108,38 @@ function loadProjectData(tech, project) {
       });
 
       const total = tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0) + materials.length;
-
       const done = tasks.reduce((sum, t) => {
-  if (t.subtasks?.length) {
-    return sum + t.subtasks.filter(st => st.status === 1).length;
-  } else {
-    return sum + ((t.complete || t.status === 1) ? 1 : 0);
-  }
-}, 0) + materials.filter(m => (m.stage ?? m.status) === 3).length;
+        if (t.subtasks?.length) {
+          return sum + t.subtasks.filter(st => st.status === 1).length;
+        } else {
+          return sum + ((t.complete || t.status === 1) ? 1 : 0);
+        }
+      }, 0) + materials.filter(m => (m.stage ?? m.status) === 3).length;
 
       const percent = total ? Math.round((done / total) * 100) : 0;
 
       document.getElementById("progress-bar").style.width = `${percent}%`;
       document.getElementById("progress-bar").textContent = `${percent}%`;
-      document.getElementById("progress-percent").textContent = `${percent}%`;
     });
+}
+
+function setupCollapsibles() {
+  const sections = [
+    { headerId: "tasks-header", contentId: "task-list" },
+    { headerId: "materials-header", contentId: "material-list" },
+    { headerId: "scope-header", contentId: "scope-content" },
+  ];
+
+  sections.forEach(({ headerId, contentId }) => {
+    const header = document.getElementById(headerId);
+    const content = document.getElementById(contentId);
+
+    if (header && content) {
+      header.addEventListener("click", () => {
+        content.classList.toggle("hidden");
+      });
+    }
+  });
 }
 
 function updateStatus(tech, project, type, name, status, callback) {
@@ -138,7 +152,7 @@ function updateStatus(tech, project, type, name, status, callback) {
       type,
       name,
       status,
-      updatedBy: "Technician" // Change this to actual username when auth is added
+      updatedBy: "Technician"
     })
   })
     .then(res => res.text())
@@ -209,9 +223,4 @@ function saveNewItem(type, name) {
       }
     })
     .catch(err => console.error("Add error:", err));
-}
-
-function toggleSection(id) {
-  const section = document.getElementById(id);
-  section.classList.toggle("expanded");
 }
