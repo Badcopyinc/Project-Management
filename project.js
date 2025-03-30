@@ -210,3 +210,8 @@ function saveNewItem(type, name) {
     })
     .catch(err => console.error("Add error:", err));
 }
+
+function toggleSection(id) {
+  const section = document.getElementById(id);
+  section.classList.toggle("expanded");
+}
