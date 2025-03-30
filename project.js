@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function loadProjectData(tech, project) {
   fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/data")
-    .then(res => res.json())
+    "ngrok-skip-browser-warning": "true"
+  }
+})
+  .then(res => res.json())
     .then(data => {
       const projectData = data.technicians?.[tech]?.projects?.[project];
       if (!projectData) {
