@@ -23,26 +23,58 @@ function loadProjectData(tech, project) {
       const taskList = document.getElementById("task-list");
       taskList.innerHTML = "";
       tasks.forEach(task => {
-        const li = document.createElement("li");
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.checked = task.complete === true || task.status === 1;
-        cb.onchange = () => updateStatus(tech, project, "task", task.name, cb.checked ? 1 : 0, () => loadProjectData(tech, project));
-        li.appendChild(cb);
-        li.append(` ${task.name}`);
-        taskList.appendChild(li);
-      });
+  const li = document.createElement("li");
+
+  // Main task checkbox (auto-derived from subtasks if present)
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+
+  const subtasks = task.subtasks || [];
+  const subDone = subtasks.filter(st => st.status === 1).length;
+  const isComplete = subtasks.length > 0 ? subDone === subtasks.length : task.complete === true || task.status === 1;
+
+  cb.checked = isComplete;
+  cb.disabled = true; // Only subtasks are clickable if present
+
+  li.appendChild(cb);
+  li.append(` ${task.name}`);
+
+  // Show subtasks if they exist
+  if (subtasks.length > 0) {
+    const subUl = document.createElement("ul");
+
+    subtasks.forEach(sub => {
+      const subLi = document.createElement("li");
+      const subCb = document.createElement("input");
+      subCb.type = "checkbox";
+      subCb.checked = sub.status === 1;
+
+      subCb.onchange = () => {
+        updateStatus(tech, project, "subtask", `${task.name}|${sub.name}`, subCb.checked ? 1 : 0, () => loadProjectData(tech, project));
+      };
+
+      subLi.appendChild(subCb);
+      subLi.append(` ${sub.name}`);
+      subUl.appendChild(subLi);
+    });
+
+    li.appendChild(subUl);
+  }
+
+  taskList.appendChild(li);
+});
 
       const matList = document.getElementById("material-list");
       matList.innerHTML = "";
+      const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
+        const colors = ["gold", "red", "green", "blue"];
+
       materials.forEach((mat, index) => {
         const li = document.createElement("li");
         li.textContent = `${mat.name} `;
 
         const stage = mat.stage ?? mat.status ?? 0;
-        const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
-        const colors = ["gold", "red", "green", "blue"];
-
+        
         const cb = document.createElement("input");
         cb.type = "checkbox";
         cb.checked = stage > 0;
@@ -68,9 +100,16 @@ function loadProjectData(tech, project) {
         matList.appendChild(li);
       });
 
-      const total = tasks.length + materials.length;
-      const done = tasks.filter(t => t.complete || t.status === 1).length +
-                   materials.filter(m => (m.stage ?? m.status) === 3).length;
+      const total = tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0) + materials.length;
+
+      const done = tasks.reduce((sum, t) => {
+  if (t.subtasks?.length) {
+    return sum + t.subtasks.filter(st => st.status === 1).length;
+  } else {
+    return sum + ((t.complete || t.status === 1) ? 1 : 0);
+  }
+}, 0) + materials.filter(m => (m.stage ?? m.status) === 3).length;
+
       const percent = total ? Math.round((done / total) * 100) : 0;
 
       document.getElementById("progress-bar").style.width = `${percent}%`;
