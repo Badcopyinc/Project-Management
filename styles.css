@@ -149,7 +149,7 @@ html, body {
   height: 100%;
   width: 100%;
   scroll-padding-top: 0;
-  background-color: #adadad;
+  background-color: #1c1c1c;
   /* Tell iOS to treat this like a web app (remove browser chrome safe area gap) */
   padding-top: env(safe-area-inset-top, 0);
 }
