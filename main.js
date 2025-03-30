@@ -24,16 +24,22 @@ fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/data", {
       const projectList = document.createElement("div");
       projectList.style.display = "none";
 
-      Object.entries(techData.projects || {}).forEach(([projectName, project]) => {
-        const entry = document.createElement("div");
-        entry.className = "project-entry";
-        entry.innerHTML = `
-          <strong>${projectName}</strong><br/>
-          ${calculateCompletion(project.tasks)}% Complete
-          <div class="progress-bar"><div class="progress-fill" style="width:${calculateCompletion(project.tasks)}%"></div></div>
-        `;
-        projectList.appendChild(entry);
-      });
+     Object.entries(techData.projects || {}).forEach(([projectName, project]) => {
+  const entry = document.createElement("div");
+  entry.className = "project-entry";
+  entry.innerHTML = `
+    <strong>${projectName}</strong><br/>
+    ${calculateCompletion(project.tasks)}% Complete
+    <div class="progress-bar"><div class="progress-fill" style="width:${calculateCompletion(project.tasks)}%"></div></div>
+  `;
+
+  entry.addEventListener("click", () => {
+    const url = `project.html?tech=${encodeURIComponent(techName)}&project=${encodeURIComponent(projectName)}`;
+    window.location.href = url;
+  });
+
+  projectList.appendChild(entry);
+});
 
       techHeader.addEventListener("click", () => {
         projectList.style.display = projectList.style.display === "none" ? "block" : "none";
