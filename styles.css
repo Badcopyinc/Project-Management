@@ -166,3 +166,12 @@ header h1.title {
 #task-list li, #material-list li {
   padding: 0.5rem 0;
 }
+
+.material-stage-yellow { color: gold; }
+.material-stage-red { color: red; }
+.material-stage-green { color: green; }
+.material-stage-blue { color: blue; }
+
+li > ul {
+  padding-left: 1rem;
+}
