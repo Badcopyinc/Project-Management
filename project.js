@@ -208,5 +208,6 @@ function saveNewItem(type, name) {
 // ✅ Needed for collapsible sections to function
 function toggleSection(id) {
   const el = document.getElementById(id);
-  if (el) el.classList.toggle("hidden");
+  if (el) el.classList.toggle("expanded");
 }
+
