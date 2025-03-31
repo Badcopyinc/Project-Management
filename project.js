@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const tech = params.get("tech");
@@ -9,7 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProjectData(tech, project) {
-  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/data")
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/data", {
+    headers: {
+      "ngrok-skip-browser-warning": "true"
+    }
+  })
     .then(res => res.json())
     .then(data => {
       const projectData = data.technicians?.[tech]?.projects?.[project];
@@ -20,29 +23,42 @@ function loadProjectData(tech, project) {
 
       const tasks = projectData.tasks || [];
       const materials = projectData.materials || [];
+      const scopeText = projectData.scope || "No scope of work provided.";
+      document.getElementById("scope-text").textContent = scopeText;
 
       const taskList = document.getElementById("task-list");
       taskList.innerHTML = "";
+
       tasks.forEach(task => {
         const li = document.createElement("li");
         const cb = document.createElement("input");
         cb.type = "checkbox";
-        cb.checked = task.complete === true || task.status === 1;
-        cb.onchange = () => updateStatus(tech, project, "task", task.name, cb.checked ? 1 : 0, () => loadProjectData(tech, project));
+
+        const subtasks = task.subtasks || [];
+        const subDone = subtasks.filter(st => st.status === 1).length;
+        const isComplete = subtasks.length > 0
+          ? subDone === subtasks.length
+          : task.complete === true || task.status === 1;
+
+        cb.checked = isComplete;
+        cb.disabled = true;
+
         li.appendChild(cb);
         li.append(` ${task.name}`);
+
         taskList.appendChild(li);
       });
 
       const matList = document.getElementById("material-list");
       matList.innerHTML = "";
+      const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
+      const colors = ["gold", "red", "green", "blue"];
+
       materials.forEach((mat, index) => {
         const li = document.createElement("li");
         li.textContent = `${mat.name} `;
 
         const stage = mat.stage ?? mat.status ?? 0;
-        const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
-        const colors = ["gold", "red", "green", "blue"];
 
         const cb = document.createElement("input");
         cb.type = "checkbox";
@@ -69,14 +85,22 @@ function loadProjectData(tech, project) {
         matList.appendChild(li);
       });
 
-      const total = tasks.length + materials.length;
-      const done = tasks.filter(t => t.complete || t.status === 1).length +
-                   materials.filter(m => (m.stage ?? m.status) === 3).length;
+      // ✅ Fixed: Progress calculation that includes subtasks
+      const total = tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0) + materials.length;
+      const done = tasks.reduce((sum, t) => {
+        if (t.subtasks?.length) {
+          return sum + t.subtasks.filter(st => st.status === 1).length;
+        } else {
+          return sum + ((t.complete || t.status === 1) ? 1 : 0);
+        }
+      }, 0) + materials.filter(m => (m.stage ?? m.status) === 3).length;
+
       const percent = total ? Math.round((done / total) * 100) : 0;
 
       document.getElementById("progress-bar").style.width = `${percent}%`;
       document.getElementById("progress-bar").textContent = `${percent}%`;
-      document.getElementById("progress-percent").textContent = `${percent}%`;
+      const percentText = document.getElementById("progress-percent");
+      if (percentText) percentText.textContent = `${percent}%`;
     });
 }
 
@@ -90,7 +114,7 @@ function updateStatus(tech, project, type, name, status, callback) {
       type,
       name,
       status,
-      updatedBy: "Technician" // Change this to actual username when auth is added
+      updatedBy: "Technician"
     })
   })
     .then(res => res.text())
@@ -102,4 +126,10 @@ function updateStatus(tech, project, type, name, status, callback) {
       }
     })
     .catch(err => console.error("Update error:", err));
+}
+
+// ✅ Restored for collapsible sections (Tasks, Materials, Scope)
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle("expanded");
 }
