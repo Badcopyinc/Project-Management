@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const tech = params.get("tech");
@@ -8,11 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProjectData(tech, project) {
-  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/data", {
-    headers: {
-      "ngrok-skip-browser-warning": "true"
-    }
-  })
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/data")
     .then(res => res.json())
     .then(data => {
       const projectData = data.technicians?.[tech]?.projects?.[project];
@@ -23,83 +20,29 @@ function loadProjectData(tech, project) {
 
       const tasks = projectData.tasks || [];
       const materials = projectData.materials || [];
-      const scopeText = projectData.scope || "No scope of work provided.";
-      document.getElementById("scope-text").textContent = scopeText;
 
       const taskList = document.getElementById("task-list");
       taskList.innerHTML = "";
-
       tasks.forEach(task => {
         const li = document.createElement("li");
         const cb = document.createElement("input");
         cb.type = "checkbox";
-
-        const subtasks = task.subtasks || [];
-        const subDone = subtasks.filter(st => st.status === 1).length;
-        const isComplete = subtasks.length > 0 ? subDone === subtasks.length : task.complete === true || task.status === 1;
-
-        cb.checked = isComplete;
-        cb.disabled = true;
-
-        const taskLabel = document.createElement("span");
-        taskLabel.textContent = ` ${task.name}`;
-        taskLabel.className = "clickable-label";
-
-        const subUl = document.createElement("ul");
-        subUl.classList.add("hidden");
-
-        taskLabel.onclick = () => {
-          subUl.classList.toggle("hidden");
-        };
-
+        cb.checked = task.complete === true || task.status === 1;
+        cb.onchange = () => updateStatus(tech, project, "task", task.name, cb.checked ? 1 : 0, () => loadProjectData(tech, project));
         li.appendChild(cb);
-        li.appendChild(taskLabel);
-
-        subtasks.forEach(sub => {
-          const subLi = document.createElement("li");
-          const subCb = document.createElement("input");
-          subCb.type = "checkbox";
-          subCb.checked = sub.status === 1;
-          subCb.onchange = () => {
-            updateStatus(tech, project, "subtask", `${task.name}|${sub.name}`, subCb.checked ? 1 : 0, () => loadProjectData(tech, project));
-          };
-          subLi.appendChild(subCb);
-          subLi.append(` ${sub.name}`);
-          subUl.appendChild(subLi);
-        });
-
-        // Add Subtask Button
-        const subBtn = document.createElement("button");
-        subBtn.textContent = "+ Add Subtask";
-        subBtn.className = "add-task-btn";
-        subBtn.onclick = () => {
-          if (!subUl.querySelector("input[type='text']")) {
-            const inputLi = document.createElement("li");
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "Subtask name";
-            input.onkeydown = (e) => {
-              if (e.key === "Enter" && input.value.trim()) {
-                saveNewItem("subtask", `${task.name}|${input.value.trim()}`);
-              }
-            };
-            inputLi.appendChild(input);
-            subUl.appendChild(inputLi);
-            input.focus();
-          }
-        };
-        subUl.appendChild(subBtn);
-        li.appendChild(subUl);
+        li.append(` ${task.name}`);
         taskList.appendChild(li);
       });
 
       const matList = document.getElementById("material-list");
       matList.innerHTML = "";
-      const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
-
       materials.forEach((mat, index) => {
         const li = document.createElement("li");
+        li.textContent = `${mat.name} `;
+
         const stage = mat.stage ?? mat.status ?? 0;
+        const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
+        const colors = ["gold", "red", "green", "blue"];
 
         const cb = document.createElement("input");
         cb.type = "checkbox";
@@ -109,26 +52,11 @@ function loadProjectData(tech, project) {
           const nextStage = (current + 1) % 4;
           updateStatus(tech, project, "material", mat.name, nextStage, () => loadProjectData(tech, project));
         };
-
-        const label = document.createElement("span");
-        label.textContent = ` ${mat.name}`;
-        label.classList.add("clickable-label");
-
-        const subUl = document.createElement("ul");
-        subUl.classList.add("hidden");
-
-        label.onclick = () => {
-          subUl.classList.toggle("hidden");
-        };
+        li.appendChild(cb);
 
         const stageBtn = document.createElement("span");
         stageBtn.textContent = stages[stage] || stages[0];
-        stageBtn.className = [
-          "material-stage-yellow",
-          "material-stage-red",
-          "material-stage-green",
-          "material-stage-blue"
-        ][stage] || "";
+        stageBtn.style.color = colors[stage] || "black";
         stageBtn.style.marginLeft = "0.5rem";
         stageBtn.style.cursor = "pointer";
         stageBtn.onclick = () => {
@@ -137,62 +65,18 @@ function loadProjectData(tech, project) {
           updateStatus(tech, project, "material", mat.name, nextStage, () => loadProjectData(tech, project));
         };
 
-        li.appendChild(cb);
-        li.appendChild(label);
         li.appendChild(stageBtn);
-
-        const subMaterials = mat.submaterials || [];
-        subMaterials.forEach(sub => {
-          const subLi = document.createElement("li");
-          const subCb = document.createElement("input");
-          subCb.type = "checkbox";
-          subCb.checked = sub.status === 1;
-          subCb.onchange = () => {
-            updateStatus(tech, project, "submaterial", `${mat.name}|${sub.name}`, subCb.checked ? 1 : 0, () => loadProjectData(tech, project));
-          };
-          subLi.appendChild(subCb);
-          subLi.append(` ${sub.name}`);
-          subUl.appendChild(subLi);
-        });
-
-        // Add Sub-Material Button
-        const subBtn = document.createElement("button");
-        subBtn.textContent = "+ Add Sub-Material";
-        subBtn.className = "add-task-btn";
-        subBtn.onclick = () => {
-          if (!subUl.querySelector("input[type='text']")) {
-            const inputLi = document.createElement("li");
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "Sub-material name";
-            input.onkeydown = (e) => {
-              if (e.key === "Enter" && input.value.trim()) {
-                saveNewItem("submaterial", `${mat.name}|${input.value.trim()}`);
-              }
-            };
-            inputLi.appendChild(input);
-            subUl.appendChild(inputLi);
-            input.focus();
-          }
-        };
-
-        subUl.appendChild(subBtn);
-        li.appendChild(subUl);
         matList.appendChild(li);
       });
 
-      const total = tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0) + materials.length;
-      const done = tasks.reduce((sum, t) => {
-        if (t.subtasks?.length) {
-          return sum + t.subtasks.filter(st => st.status === 1).length;
-        } else {
-          return sum + ((t.complete || t.status === 1) ? 1 : 0);
-        }
-      }, 0) + materials.filter(m => (m.stage ?? m.status) === 3).length;
-
+      const total = tasks.length + materials.length;
+      const done = tasks.filter(t => t.complete || t.status === 1).length +
+                   materials.filter(m => (m.stage ?? m.status) === 3).length;
       const percent = total ? Math.round((done / total) * 100) : 0;
+
       document.getElementById("progress-bar").style.width = `${percent}%`;
       document.getElementById("progress-bar").textContent = `${percent}%`;
+      document.getElementById("progress-percent").textContent = `${percent}%`;
     });
 }
 
@@ -206,66 +90,16 @@ function updateStatus(tech, project, type, name, status, callback) {
       type,
       name,
       status,
-      updatedBy: "Technician"
+      updatedBy: "Technician" // Change this to actual username when auth is added
     })
   })
     .then(res => res.text())
     .then(text => {
-      if (text === "Success") callback?.();
-      else console.error("Update failed:", text);
-    })
-    .catch(err => console.error("Update error:", err));
-}
-
-function addTask() {
-  const taskList = document.getElementById("task-list");
-  const li = document.createElement("li");
-  const input = document.createElement("input");
-  input.type = "text";
-  input.placeholder = "New task name";
-  input.onkeydown = (e) => {
-    if (e.key === "Enter" && input.value.trim()) {
-      saveNewItem("task", input.value.trim());
-    }
-  };
-  li.appendChild(input);
-  taskList.appendChild(li);
-  input.focus();
-}
-
-function addMaterial() {
-  const matList = document.getElementById("material-list");
-  const li = document.createElement("li");
-  const input = document.createElement("input");
-  input.type = "text";
-  input.placeholder = "New material name";
-  input.onkeydown = (e) => {
-    if (e.key === "Enter" && input.value.trim()) {
-      saveNewItem("material", input.value.trim());
-    }
-  };
-  li.appendChild(input);
-  matList.appendChild(li);
-  input.focus();
-}
-
-function saveNewItem(type, name) {
-  const params = new URLSearchParams(window.location.search);
-  const tech = params.get("tech");
-  const project = params.get("project");
-
-  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/addItem", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ tech, project, type, name, updatedBy: "Technician" })
-  })
-    .then(res => res.text())
-    .then((res) => {
-      if (res === "Success") {
-        loadProjectData(tech, project);
+      if (text === "Success") {
+        callback?.();
       } else {
-        alert("Failed to add " + type);
+        console.error("Update failed:", text);
       }
     })
-    .catch(err => console.error("Add error:", err));
+    .catch(err => console.error("Update error:", err));
 }
