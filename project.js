@@ -28,8 +28,9 @@ function loadProjectData(tech, project) {
       document.getElementById("scope-text").textContent = scopeText;
 
       const taskList = document.getElementById("task-list");
-      taskList.innerHTML = "";
-      tasks.forEach(task => {
+taskList.innerHTML = "";
+
+tasks.forEach(task => {
   const li = document.createElement("li");
 
   const cb = document.createElement("input");
@@ -42,18 +43,18 @@ function loadProjectData(tech, project) {
   cb.checked = isComplete;
   cb.disabled = true;
 
-  const label = document.createElement("span");
-  label.textContent = ` ${task.name}`;
-  label.classList.add("clickable-label");
-  label.onclick = () => {
-    subUl.classList.toggle("expanded");
+  const taskLabel = document.createElement("span");
+  taskLabel.textContent = ` ${task.name}`;
+  taskLabel.className = "clickable-label";
+  taskLabel.onclick = () => {
+    subUl.classList.toggle("hidden");
   };
 
   li.appendChild(cb);
-  li.appendChild(label);
+  li.appendChild(taskLabel);
 
   const subUl = document.createElement("ul");
-  subUl.classList.add("collapsible-content");
+  subUl.classList.add("hidden");
 
   subtasks.forEach(sub => {
     const subLi = document.createElement("li");
@@ -69,6 +70,23 @@ function loadProjectData(tech, project) {
     subLi.append(` ${sub.name}`);
     subUl.appendChild(subLi);
   });
+
+  // Add subtask input
+  const addSubLi = document.createElement("li");
+  const subInput = document.createElement("input");
+  subInput.type = "text";
+  subInput.placeholder = "Add subtask";
+  subInput.onkeydown = (e) => {
+    if (e.key === "Enter" && subInput.value.trim()) {
+      saveNewItem("subtask", `${task.name}|${subInput.value.trim()}`);
+    }
+  };
+  addSubLi.appendChild(subInput);
+  subUl.appendChild(addSubLi);
+
+  li.appendChild(subUl);
+  taskList.appendChild(li);
+});
 
   // Add Subtask button
   const addBtn = document.createElement("button");
