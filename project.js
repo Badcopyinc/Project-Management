@@ -41,7 +41,6 @@ function loadProjectData(tech, project) {
           : task.complete === true || task.status === 1;
 
         cb.checked = isComplete;
-        cb.disabled = true;
 
         const label = document.createElement("span");
         label.textContent = ` ${task.name}`;
@@ -73,20 +72,23 @@ function loadProjectData(tech, project) {
         addSubBtn.className = "add-task-btn";
         addSubBtn.onclick = () => {
           if (!subUl.querySelector("input[type='text']")) {
-            const inputLi = document.createElement("li");
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "Subtask name";
-            input.onkeydown = (e) => {
-              if (e.key === "Enter" && input.value.trim()) {
-                saveNewItem("subtask", `${task.name}|${input.value.trim()}`);
-              }
-            };
-            inputLi.appendChild(input);
-            subUl.appendChild(inputLi);
-            input.focus();
-          }
-        };
+  const inputLi = document.createElement("li");
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "Subtask name";
+  input.onkeydown = (e) => {
+    if (e.key === "Enter" && input.value.trim()) {
+      const liToRemove = input.parentElement;
+      saveNewItem("subtask", `${task.name}|${input.value.trim()}`);
+      subUl.removeChild(liToRemove); // 🧹 removes the input row
+    }
+  };
+
+  inputLi.appendChild(input);
+  subUl.appendChild(inputLi);
+  input.focus();
+ }
+};
 
         subUl.appendChild(addSubBtn);
 
@@ -96,7 +98,7 @@ function loadProjectData(tech, project) {
         taskList.appendChild(li);
       });
 
-             const matList = document.getElementById("material-list");
+      const matList = document.getElementById("material-list");
       matList.innerHTML = "";
       const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
       const colors = ["gold", "red", "green", "blue"];
@@ -158,16 +160,20 @@ const addSubMatBtn = document.createElement("button");
 addSubMatBtn.textContent = "+ Add Sub-Material";
 addSubMatBtn.className = "add-task-btn";
 addSubMatBtn.onclick = () => {
+  
   if (!subUl.querySelector("input[type='text']")) {
     const inputLi = document.createElement("li");
     const input = document.createElement("input");
     input.type = "text";
     input.placeholder = "Sub-material name";
     input.onkeydown = (e) => {
+  
       if (e.key === "Enter" && input.value.trim()) {
-        saveNewItem("submaterial", `${mat.name}|${input.value.trim()}`);
-      }
-    };
+    const liToRemove = input.parentElement;
+    saveNewItem("submaterial", `${mat.name}|${input.value.trim()}`);
+    subUl.removeChild(liToRemove); // 🧹 remove input row
+  }
+};
     inputLi.appendChild(input);
     subUl.appendChild(inputLi);
     input.focus();
@@ -220,6 +226,33 @@ function updateStatus(tech, project, type, name, status, callback) {
       }
     })
     .catch(err => console.error("Update error:", err));
+}
+
+function saveNewItem(type, name) {
+  const params = new URLSearchParams(window.location.search);
+  const tech = params.get("tech");
+  const project = params.get("project");
+
+  fetch("https://adjusted-bluejay-gratefully.ngrok-free.app/addItem", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tech,
+      project,
+      type,
+      name,
+      updatedBy: "Technician"
+    })
+  })
+    .then(res => res.text())
+    .then(res => {
+      if (res === "Success") {
+        loadProjectData(tech, project); // ✅ Refresh data on success
+      } else {
+        alert("Failed to add " + type);
+      }
+    })
+    .catch(err => console.error("Add error:", err));
 }
 
 // ✅ Handles main collapsibles (Tasks, Materials, Scope)
