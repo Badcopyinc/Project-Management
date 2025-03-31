@@ -43,9 +43,33 @@ function loadProjectData(tech, project) {
         cb.checked = isComplete;
         cb.disabled = true;
 
-        li.appendChild(cb);
-        li.append(` ${task.name}`);
+        const label = document.createElement("span");
+        label.textContent = ` ${task.name}`;
+        label.className = "clickable-label";
 
+        const subUl = document.createElement("ul");
+        subUl.classList.add("hidden");
+
+        label.onclick = () => {
+          subUl.classList.toggle("hidden");
+        };
+
+        subtasks.forEach(sub => {
+          const subLi = document.createElement("li");
+          const subCb = document.createElement("input");
+          subCb.type = "checkbox";
+          subCb.checked = sub.status === 1;
+          subCb.onchange = () => {
+            updateStatus(tech, project, "subtask", `${task.name}|${sub.name}`, subCb.checked ? 1 : 0, () => loadProjectData(tech, project));
+          };
+          subLi.appendChild(subCb);
+          subLi.append(` ${sub.name}`);
+          subUl.appendChild(subLi);
+        });
+
+        li.appendChild(cb);
+        li.appendChild(label);
+        li.appendChild(subUl);
         taskList.appendChild(li);
       });
 
@@ -56,19 +80,20 @@ function loadProjectData(tech, project) {
 
       materials.forEach((mat, index) => {
         const li = document.createElement("li");
-        li.textContent = `${mat.name} `;
-
-        const stage = mat.stage ?? mat.status ?? 0;
 
         const cb = document.createElement("input");
         cb.type = "checkbox";
+        const stage = mat.stage ?? mat.status ?? 0;
         cb.checked = stage > 0;
         cb.onclick = () => {
           const current = materials[index].stage ?? 0;
           const nextStage = (current + 1) % 4;
           updateStatus(tech, project, "material", mat.name, nextStage, () => loadProjectData(tech, project));
         };
-        li.appendChild(cb);
+
+        const label = document.createElement("span");
+        label.textContent = ` ${mat.name}`;
+        label.className = "clickable-label";
 
         const stageBtn = document.createElement("span");
         stageBtn.textContent = stages[stage] || stages[0];
@@ -81,11 +106,34 @@ function loadProjectData(tech, project) {
           updateStatus(tech, project, "material", mat.name, nextStage, () => loadProjectData(tech, project));
         };
 
+        const subUl = document.createElement("ul");
+        subUl.classList.add("hidden");
+
+        label.onclick = () => {
+          subUl.classList.toggle("hidden");
+        };
+
+        const subMaterials = mat.submaterials || [];
+        subMaterials.forEach(sub => {
+          const subLi = document.createElement("li");
+          const subCb = document.createElement("input");
+          subCb.type = "checkbox";
+          subCb.checked = sub.status === 1;
+          subCb.onchange = () => {
+            updateStatus(tech, project, "submaterial", `${mat.name}|${sub.name}`, subCb.checked ? 1 : 0, () => loadProjectData(tech, project));
+          };
+          subLi.appendChild(subCb);
+          subLi.append(` ${sub.name}`);
+          subUl.appendChild(subLi);
+        });
+
+        li.appendChild(cb);
+        li.appendChild(label);
         li.appendChild(stageBtn);
+        li.appendChild(subUl);
         matList.appendChild(li);
       });
 
-      // ✅ Fixed: Progress calculation that includes subtasks
       const total = tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0) + materials.length;
       const done = tasks.reduce((sum, t) => {
         if (t.subtasks?.length) {
@@ -128,7 +176,7 @@ function updateStatus(tech, project, type, name, status, callback) {
     .catch(err => console.error("Update error:", err));
 }
 
-// ✅ Restored for collapsible sections (Tasks, Materials, Scope)
+// ✅ Handles main collapsibles (Tasks, Materials, Scope)
 function toggleSection(id) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle("expanded");
