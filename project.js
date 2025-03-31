@@ -29,7 +29,7 @@ function loadProjectData(tech, project) {
       const taskList = document.getElementById("task-list");
       taskList.innerHTML = "";
 
-      tasks.forEach(task => {
+        tasks.forEach(task => {
         const li = document.createElement("li");
         const cb = document.createElement("input");
         cb.type = "checkbox";
@@ -67,13 +67,36 @@ function loadProjectData(tech, project) {
           subUl.appendChild(subLi);
         });
 
+        // 🔹 Add Subtask Button
+        const addSubBtn = document.createElement("button");
+        addSubBtn.textContent = "+ Add Subtask";
+        addSubBtn.className = "add-task-btn";
+        addSubBtn.onclick = () => {
+          if (!subUl.querySelector("input[type='text']")) {
+            const inputLi = document.createElement("li");
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "Subtask name";
+            input.onkeydown = (e) => {
+              if (e.key === "Enter" && input.value.trim()) {
+                saveNewItem("subtask", `${task.name}|${input.value.trim()}`);
+              }
+            };
+            inputLi.appendChild(input);
+            subUl.appendChild(inputLi);
+            input.focus();
+          }
+        };
+
+        subUl.appendChild(addSubBtn);
+
         li.appendChild(cb);
         li.appendChild(label);
         li.appendChild(subUl);
         taskList.appendChild(li);
       });
 
-      const matList = document.getElementById("material-list");
+             const matList = document.getElementById("material-list");
       matList.innerHTML = "";
       const stages = ["Picked up/on van", "On site", "Installed", "Returning"];
       const colors = ["gold", "red", "green", "blue"];
@@ -130,6 +153,29 @@ function loadProjectData(tech, project) {
         li.appendChild(cb);
         li.appendChild(label);
         li.appendChild(stageBtn);
+        // 🔹 Add Sub-Material Button
+const addSubMatBtn = document.createElement("button");
+addSubMatBtn.textContent = "+ Add Sub-Material";
+addSubMatBtn.className = "add-task-btn";
+addSubMatBtn.onclick = () => {
+  if (!subUl.querySelector("input[type='text']")) {
+    const inputLi = document.createElement("li");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Sub-material name";
+    input.onkeydown = (e) => {
+      if (e.key === "Enter" && input.value.trim()) {
+        saveNewItem("submaterial", `${mat.name}|${input.value.trim()}`);
+      }
+    };
+    inputLi.appendChild(input);
+    subUl.appendChild(inputLi);
+    input.focus();
+  }
+};
+
+subUl.appendChild(addSubMatBtn);
+
         li.appendChild(subUl);
         matList.appendChild(li);
       });
